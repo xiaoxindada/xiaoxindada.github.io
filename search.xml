@@ -1,6 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>hexo diaspora 主题 gitalk 插件踩坑记录</title>
+    <url>/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<h3 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h3><p>配置好github账号<br>npm i –save gitalk # 安装插件<br>github 创建一个用于存放评论的空仓库备用，需要启用issue功能<br>然后需要创建 <code>GitHub Application</code> 如果没有 <a href="https://github.com/settings/applications/new">点击这里申请</a>,<br><code>Authorization callback URL</code> 填写GithubPages的域名 <code>https://xxx.github.io</code> 有专属域名的填专属域名，否则会跳转到主界面无法登陆<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/1.png"></p>
+<p>记录好Client ID  Client secrets 等会要用<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/2.png"></p>
+<p>配置themes&#x2F;_config.yml (巨坑 因为资料比较乱挨个测试，将近卡了一天)</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">插件默认配置:</span><br><span class="line"></span><br><span class="line">gitalk:</span><br><span class="line">    # 是否启用评论功能</span><br><span class="line">    enable: true</span><br><span class="line">    # 是否自动展开评论框</span><br><span class="line">    autoExpand: false</span><br><span class="line">    # 应用编号</span><br><span class="line">    clientID: &#x27;7e2a5d7410f4fd6a167c&#x27;</span><br><span class="line">    # 应用秘钥</span><br><span class="line">    clientSecret: &#x27;9de6847c58b787e15f1148ec4e844b3690bb8e31&#x27;</span><br><span class="line">    # issue仓库名</span><br><span class="line">    repo: &#x27; blog-comments&#x27;</span><br><span class="line">    # Github名</span><br><span class="line">    owner: &#x27;xiaoxindada&#x27;</span><br><span class="line">    # Github名</span><br><span class="line">    admin: [&#x27;xiaoxindada&#x27;]</span><br><span class="line">    # Ensure uniqueness and length less than 50</span><br><span class="line">    id: location.pathname</span><br><span class="line">    # Facebook-like distraction free mode</span><br><span class="line">    distractionFreeMode: true</span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h3><p> <code>Error: Not Found.</code></p>
+<p><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/3.png"><br>通过查资料得知是_config.yml配置问题<br>但是检查了无数遍发现并没有配置填错<br>然后直到遇到<a href="https://blog.csdn.net/qing_gee/article/details/100133060">这篇文章</a>的配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gitalk:</span><br><span class="line">    owner: qinggee</span><br><span class="line">    repo: blog-comments</span><br><span class="line">    clientID: 11a6f252f6224761</span><br><span class="line">    clientSecret: 3d1722301d3ecfc3828d137c9ea50c00a7</span><br><span class="line">    # 参数需要改成你自己的</span><br></pre></td></tr></table></figure>
+
+<p>替换默认的配置后奇迹般的能用了<br>然后遇到了 <code>未找到相关的Issues进行评论</code></p>
+<p>通过查资料得知是issues仓库没有初始化需要如下所示:<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/4.png"><br>先初始化一下就好了，但是手动初始化实属浪费时间且容易出错<br>于是遇到了相关配置 <a href="https://iochen.com/post/use-gitalk-in-hexo/">参考文章</a></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">perPage: 15 #每页多少个评论</span><br><span class="line">pagerDirection: last #排序方式是从旧到新（first）还是从新到旧（last）</span><br><span class="line">createIssueManually: true #如果当前页面没有相应的 isssue ，且登录的用户属于 admin，则会自动创建 issue。如果设置为 true，则显示一个初始化页面，创建 issue 需要点击 init 按钮。</span><br><span class="line">distractionFreeMode: false #是否启用快捷键(cmd|ctrl + enter) 提交评论.</span><br></pre></td></tr></table></figure>
+
+<p>添加上理论是没有问题的但是还是没用<br>然后通过仔细查看文章还有一个管理员用户登陆配置项</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">adminUser: &quot;[&#x27;iosite&#x27;]&quot; #管理员用户，下文也会详细讲</span><br></pre></td></tr></table></figure>
+
+<p>这个有点映像然后在<a href="https://github.com/gitalk/gitalk">官方文档</a>中发现了此配置的修改</p>
+<p>官方解释:</p>
+<p>admin <code>Array</code></p>
+<p>必须. GitHub repository 的所有者和合作者 (对这个 repository 有写权限的用户)。</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">两个为一起:</span><br><span class="line">  admin: [&#x27;xiaoxindada&#x27;]  # 管理员用户登陆</span><br><span class="line">  createIssueManually: true # 如果 issue 仓库没有当前页面的 issue 且登陆的用户为管理员，则显示一个初始化按钮创建</span><br></pre></td></tr></table></figure>
+
+<p>加上以后完美解决<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/5.png"></p>
+<h3 id="完整的配置"><a href="#完整的配置" class="headerlink" title="完整的配置"></a>完整的配置</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gitalk:</span><br><span class="line">  enable: true # 是否启用评论功能</span><br><span class="line">  autoExpand: false # 是否自动展开评论框</span><br><span class="line">  owner: xiaoxindada # 仓库所有者</span><br><span class="line">  repo: blog-comments # issue仓库名</span><br><span class="line">  clientID: 7e2a5d7410f4fd6a167c # 应用编号</span><br><span class="line">  clientSecret: 9de6847c58b787e15f1148ec4e844b3690bb8e31 # 应用秘钥</span><br><span class="line">  perPage: 15 # 每页多少个评论</span><br><span class="line">  pagerDirection: last # 排序方式是从旧到新（first）还是从新到旧（last）</span><br><span class="line">  admin: [&#x27;xiaoxindada&#x27;]  # 管理员用户登陆</span><br><span class="line">  createIssueManually: true # 如果 issue 仓库没有当前页面的 issue 且登陆的用户为管理员，则显示一个初始化按钮创建issue 需要点击 init 按钮。</span><br><span class="line">  distractionFreeMode: false # 是否启用快捷键(cmd|ctrl + enter) 提交评论.</span><br></pre></td></tr></table></figure>
+
+<h3 id="效果预览"><a href="#效果预览" class="headerlink" title="效果预览"></a>效果预览</h3><p><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/6.png"></p>
+<p><b>最后使用 hexo deploy 部署到github</b><br><b>至此踩坑结束， 感觉真的很糟糕</b></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客搭建填坑</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>HelloBlog</title>
     <url>/2022/02/23/helloblog/</url>
     <content><![CDATA[<h3 id="博客主题地址"><a href="#博客主题地址" class="headerlink" title="博客主题地址:"></a>博客主题地址:</h3><p><a href="https://github.com/fluid-dev/hexo-theme-fluid">Fluid</a><br><a href="https://github.com/Fechin/hexo-theme-diaspora/">diaspora</a></p>
@@ -47,44 +85,6 @@
       </categories>
       <tags>
         <tag>分区</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo diaspora 主题 gitalk 插件踩坑记录</title>
-    <url>/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<h3 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h3><p>配置好github账号<br>npm i –save gitalk # 安装插件<br>github 创建一个用于存放评论的空仓库备用，需要启用issue功能<br>然后需要创建 <code>GitHub Application</code> 如果没有 <a href="https://github.com/settings/applications/new">点击这里申请</a>,<br><code>Authorization callback URL</code> 填写GithubPages的域名 <code>https://xxx.github.io</code> 有专属域名的填专属域名，否则会跳转到主界面无法登陆<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/1.png"></p>
-<p>记录好Client ID  Client secrets 等会要用<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/2.png"></p>
-<p>配置themes&#x2F;_config.yml (巨坑 因为资料比较乱挨个测试，将近卡了一天)</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">插件默认配置:</span><br><span class="line"></span><br><span class="line">gitalk:</span><br><span class="line">    # 是否启用评论功能</span><br><span class="line">    enable: true</span><br><span class="line">    # 是否自动展开评论框</span><br><span class="line">    autoExpand: false</span><br><span class="line">    # 应用编号</span><br><span class="line">    clientID: &#x27;7e2a5d7410f4fd6a167c&#x27;</span><br><span class="line">    # 应用秘钥</span><br><span class="line">    clientSecret: &#x27;9de6847c58b787e15f1148ec4e844b3690bb8e31&#x27;</span><br><span class="line">    # issue仓库名</span><br><span class="line">    repo: &#x27; blog-comments&#x27;</span><br><span class="line">    # Github名</span><br><span class="line">    owner: &#x27;xiaoxindada&#x27;</span><br><span class="line">    # Github名</span><br><span class="line">    admin: [&#x27;xiaoxindada&#x27;]</span><br><span class="line">    # Ensure uniqueness and length less than 50</span><br><span class="line">    id: location.pathname</span><br><span class="line">    # Facebook-like distraction free mode</span><br><span class="line">    distractionFreeMode: true</span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h3><p> <code>Error: Not Found.</code></p>
-<p><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/3.png"><br>通过查资料得知是_config.yml配置问题<br>但是检查了无数遍发现并没有配置填错<br>然后直到遇到<a href="https://blog.csdn.net/qing_gee/article/details/100133060">这篇文章</a>的配置</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gitalk:</span><br><span class="line">    owner: qinggee</span><br><span class="line">    repo: blog-comments</span><br><span class="line">    clientID: 11a6f252f6224761</span><br><span class="line">    clientSecret: 3d1722301d3ecfc3828d137c9ea50c00a7</span><br><span class="line">    # 参数需要改成你自己的</span><br></pre></td></tr></table></figure>
-
-<p>替换默认的配置后奇迹般的能用了<br>然后遇到了 <code>未找到相关的Issues进行评论</code></p>
-<p>通过查资料得知是issues仓库没有初始化需要如下所示:<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/4.png"><br>先初始化一下就好了，但是手动初始化实属浪费时间且容易出错<br>于是遇到了相关配置 <a href="https://iochen.com/post/use-gitalk-in-hexo/">参考文章</a></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">perPage: 15 #每页多少个评论</span><br><span class="line">pagerDirection: last #排序方式是从旧到新（first）还是从新到旧（last）</span><br><span class="line">createIssueManually: true #如果当前页面没有相应的 isssue ，且登录的用户属于 admin，则会自动创建 issue。如果设置为 true，则显示一个初始化页面，创建 issue 需要点击 init 按钮。</span><br><span class="line">distractionFreeMode: false #是否启用快捷键(cmd|ctrl + enter) 提交评论.</span><br></pre></td></tr></table></figure>
-
-<p>添加上理论是没有问题的但是还是没用<br>然后通过仔细查看文章还有一个管理员用户登陆配置项</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">adminUser: &quot;[&#x27;iosite&#x27;]&quot; #管理员用户，下文也会详细讲</span><br></pre></td></tr></table></figure>
-
-<p>这个有点映像然后在<a href="https://github.com/gitalk/gitalk">官方文档</a>中发现了此配置的修改</p>
-<p>官方解释:</p>
-<p>admin <code>Array</code></p>
-<p>必须. GitHub repository 的所有者和合作者 (对这个 repository 有写权限的用户)。</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">两个为一起:</span><br><span class="line">  admin: [&#x27;xiaoxindada&#x27;]  # 管理员用户登陆</span><br><span class="line">  createIssueManually: true # 如果 issue 仓库没有当前页面的 issue 且登陆的用户为管理员，则显示一个初始化按钮创建</span><br></pre></td></tr></table></figure>
-
-<p>加上以后完美解决<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/5.png"></p>
-<h3 id="完整的配置"><a href="#完整的配置" class="headerlink" title="完整的配置"></a>完整的配置</h3><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">gitalk:</span><br><span class="line">  enable: true # 是否启用评论功能</span><br><span class="line">  autoExpand: false # 是否自动展开评论框</span><br><span class="line">  owner: xiaoxindada # 仓库所有者</span><br><span class="line">  repo: blog-comments # issue仓库名</span><br><span class="line">  clientID: 7e2a5d7410f4fd6a167c # 应用编号</span><br><span class="line">  clientSecret: 9de6847c58b787e15f1148ec4e844b3690bb8e31 # 应用秘钥</span><br><span class="line">  perPage: 15 # 每页多少个评论</span><br><span class="line">  pagerDirection: last # 排序方式是从旧到新（first）还是从新到旧（last）</span><br><span class="line">  admin: [&#x27;xiaoxindada&#x27;]  # 管理员用户登陆</span><br><span class="line">  createIssueManually: true # 如果 issue 仓库没有当前页面的 issue 且登陆的用户为管理员，则显示一个初始化按钮创建issue 需要点击 init 按钮。</span><br><span class="line">  distractionFreeMode: false # 是否启用快捷键(cmd|ctrl + enter) 提交评论.</span><br></pre></td></tr></table></figure>
-
-<h3 id="效果预览"><a href="#效果预览" class="headerlink" title="效果预览"></a>效果预览</h3><p><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/6.png"></p>
-<p><b>最后使用 hexo deploy 部署到github</b><br><b>至此踩坑结束， 感觉真的很糟糕</b></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客搭建填坑</tag>
       </tags>
   </entry>
   <entry>
