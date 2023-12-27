@@ -50,40 +50,54 @@
       </tags>
   </entry>
   <entry>
-    <title>给hexo博客添加live2d小人</title>
-    <url>/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/</url>
-    <content><![CDATA[<h3 id="给hexo博客添加Live2d小人"><a href="#给hexo博客添加Live2d小人" class="headerlink" title="给hexo博客添加Live2d小人"></a>给hexo博客添加Live2d小人</h3><p>我们在观看别人的博客的时候有时就会发现他们的博客里面有个很可爱的小人，那么如何在自己的hexo博客中添加小人呢?<br>有两种方法：</p>
-<p><b> 1. 安装 <code>hexo-helper-live2d</code> 模块</b></p>
-<p>安装模块</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo npm install --save hexo-helper-live2d</span><br></pre></td></tr></table></figure>
+    <title>随机图片api接口网站</title>
+    <url>/2023/12/21/%E9%9A%8F%E6%9C%BA%E5%9B%BE%E7%89%87api%E6%8E%A5%E5%8F%A3%E7%BD%91%E7%AB%99/</url>
+    <content><![CDATA[<h2 id="原文跳转"><a href="#原文跳转" class="headerlink" title="原文跳转"></a><a href="https://blog.csdn.net/SectSnow/article/details/115835711">原文跳转</a></h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">樱花：https://www.dmoe.cc/random.php</span><br><span class="line">晓晴博客：https://acg.toubiec.cn/random.php</span><br><span class="line">Unsplash Source | API Documentation：详情请看官网介绍</span><br><span class="line">夏沫博客：https://cdn.seovx.com/?mom=302</span><br><span class="line">https://cdn.seovx.com/d/?mom=302</span><br><span class="line">https://cdn.seovx.com/ha/?mom=302</span><br><span class="line">二次元随机图：https://api.blogbig.cn/random/api.php</span><br><span class="line">搏天api：https://api.btstu.cn/sjbz/api.php</span><br><span class="line">姬长信API For Docker：</span><br><span class="line">----每日bing：https://api.isoyu.com/bing_images.php</span><br><span class="line">----美女图片壁纸：https://api.isoyu.com/mm_images.php</span><br><span class="line">----网红专栏壁纸：https://api.isoyu.com/beibei_images.php</span><br><span class="line">----动态IP签名图片：https://api.isoyu.com/ip_images.php?signature=早安</span><br><span class="line">----ARU(阿鲁)表情包：https://api.isoyu.com/ARU_GIF_S.php</span><br><span class="line">樱道：https://api.r10086.com/动漫综合1.php （网站中有更多api接口）</span><br><span class="line">小歪API：https://api.ixiaowai.cn/api/api.php（二次元动漫）</span><br><span class="line">https://api.ixiaowai.cn/mcapi/mcapi.php（mc酱动漫）</span><br><span class="line">https://api.ixiaowai.cn/gqapi/gqapi.php（高清壁纸）</span><br><span class="line">保罗｜API：https://api.paugram.com/wallpaper/</span><br><span class="line">墨天逸：https://api.mtyqx.cn/tapi/random.php</span><br><span class="line">EEE.DOG：https://api.yimian.xyz/img</span><br><span class="line">动漫星空：https://api.dongmanxingkong.com/suijitupian/acg/1080p/index.php</span><br><span class="line">岁月小筑：#https调用https://img.xjh.me/random_img.php</span><br><span class="line">#http调用http://img.xjh.me/random_img.php</span><br><span class="line">东方Project：https://img.paulzzh.tech/touhou/random</span><br></pre></td></tr></table></figure>
 
-<p>然后再博客根目录的 <code>_config.yml</code> 添加如下配置</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># live2d</span><br><span class="line">live2d:</span><br><span class="line">  enable: true  # 是否启动</span><br><span class="line">  scriptFrom: local # 默认</span><br><span class="line">  pluginRootPath: live2dw/  # 插件在站点上的根目录(相对路径)</span><br><span class="line">  pluginJsPath: lib/  # 脚本文件相对与插件根目录路径</span><br><span class="line">  pluginModelPath: assets/  # 模型文件相对与插件根目录路径</span><br><span class="line">  tagMode: false  # 标签模式, 是否仅替换 live2d tag标签而非插入到所有页面中</span><br><span class="line">  debug: false  # 调试, 是否在控制台输出日志</span><br><span class="line">  model:</span><br><span class="line">    use: nepmaid  ## 模型文件</span><br><span class="line">  display:</span><br><span class="line">    position: right # 定位方向 left right top bottom</span><br><span class="line">    width: 150  # 小人宽度</span><br><span class="line">    height: 300 #  小人高度</span><br><span class="line">    hOffset: -15  # 向 偏移</span><br><span class="line">    vOffset: -15  # 像 偏移</span><br><span class="line">  mobile:</span><br><span class="line">    show: false  # 手机端是否显示</span><br><span class="line">  react:</span><br><span class="line">    opacity: 0.7  # 模型透明度</span><br></pre></td></tr></table></figure>
-<p><b> 注意缩进，否则配置无效 </b><br>然后 下载好 live2d 模型</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/summerscar/live2dDemo</span><br></pre></td></tr></table></figure>
-
-<p>接下来在博客根目录新建一个 <code>live2d_models</code> 目录<br>在 <code>live2dDemo/assets/</code> 目录里找到你需要的模型目录 并把他们整个复制到 <code>live2d_models</code> 目录中</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">规则：live2d_models/&lt;模块名&gt;</span><br><span class="line"></span><br><span class="line">比如: live2d_models/nepmaid</span><br></pre></td></tr></table></figure>
-
-<p><b> 有些模型的配置文件命名可能不规范需要自行修改文件名 </b><br><b> 打开模块文件夹 找到 <code>mode.json</code> 或者其他 改名为 &lt;模块名&gt;.mode.json </b></p>
-<p>最后修改 <code>_config.yml</code> 里面刚刚添加的 live2d 配置条目里面的:</p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">model:</span><br><span class="line">  use: nepmaid  ## 模型文件</span><br></pre></td></tr></table></figure>
-
-<p><b> 大功告成 最后输入 </b></p>
-<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo server</span><br></pre></td></tr></table></figure>
-<p>然后清除一下浏览器缓存，打开后就可以发现我们添加的小人已经在你的博客里面看着你了</p>
-<p><b> 2.使用 <code>live2d-widget</code> 项目</b><br>github 地址: <a href="https://github.com/stevenjoezhang/live2d-widget">https://github.com/stevenjoezhang/live2d-widget</a><br><b> 这个比较复杂 需要一定的代码基础 </b></p>
-<p>如果你是小白，或者只需要最基础的功能，那么只用将这一行代码加入到你主题文件夹里面的布局文件 找到带有 <code>head</code> 或 <code>body</code> 标签的布局文件中 </p>
-<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
-<p>更多请参考官方文档 <a href="https://github.com/stevenjoezhang/live2d-widget/blob/master/README.md">https://github.com/stevenjoezhang/live2d-widget/blob/master/README.md</a><br>或者 <a href="https://www.bilibili.com/read/cv18133283/">https://www.bilibili.com/read/cv18133283/</a></p>
-<h3 id="效果演示"><a href="#效果演示" class="headerlink" title="效果演示"></a>效果演示</h3><p><code>hexo-helper-live2d</code><br><img src="/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/1.png"></p>
-<p><code>live2d-widget</code><br><img src="/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/2.png"></p>
+<h2 id="自用api"><a href="#自用api" class="headerlink" title="自用api"></a>自用api</h2><p><a href="https://img.xjh.me/random_img.php?return=bg">岁月小筑API</a></p>
 ]]></content>
       <categories>
         <category>博客</category>
       </categories>
       <tags>
         <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ubuntu 配置 mysql 8.0.x 踩坑记录</title>
+    <url>/2023/04/15/ubuntu-%E9%85%8D%E7%BD%AE-mysql-8-0-x-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>因为最近有一些原因打算把MySQL数据库迁移到Ubuntu服务器中结果各种坑，为此记录一下方便日后开发</p>
+<h3 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install mysql-server</span><br></pre></td></tr></table></figure>
+
+<h3 id="MySQL服务管理命令"><a href="#MySQL服务管理命令" class="headerlink" title="MySQL服务管理命令"></a>MySQL服务管理命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service mysql status <span class="comment"># 查看服务状态</span></span><br><span class="line">sudo service mysql start <span class="comment"># 启动服务</span></span><br><span class="line">sudo service mysql stop <span class="comment"># 停止服务</span></span><br><span class="line">sudo service mysql restart <span class="comment"># 重启服务</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt purge mysql*</span><br><span class="line">sudo <span class="built_in">rm</span> -rf /etc/mysql/ /var/lib/mysql</span><br></pre></td></tr></table></figure>
+
+<h3 id="忘记账号密码"><a href="#忘记账号密码" class="headerlink" title="忘记账号密码"></a>忘记账号密码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在[mysqld]段下加入 skip-grant-tables</span></span><br><span class="line">sudo service mysql restart</span><br><span class="line"><span class="comment"># 然后输入 mysql登录</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="查询-user表-查看所有的-user-信息"><a href="#查询-user表-查看所有的-user-信息" class="headerlink" title="查询 user表 查看所有的 user 信息"></a>查询 user表 查看所有的 user 信息</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">user</span>,authentication_string,plugin,host <span class="keyword">from</span> mysql.user;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询以开放的端口号"><a href="#查询以开放的端口号" class="headerlink" title="查询以开放的端口号"></a>查询以开放的端口号</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> variables <span class="keyword">like</span> <span class="string">&#x27;port&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改账户密码"><a href="#修改账户密码" class="headerlink" title="修改账户密码"></a>修改账户密码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果忘记了账户密码 需要在mysqld.cnf配置文件的 [mysqld] 段下加 skip-grant-tables</span></span><br><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在[mysqld]段下加入 skip-grant-tables</span></span><br><span class="line"><span class="comment"># 然后重启MySQL服务后输入 mysql 即可免密登录</span></span><br><span class="line"><span class="comment"># 不能直接修改密码，会报错。要先清空root密码：</span></span><br><span class="line">update user <span class="built_in">set</span> authentication_string=<span class="string">&#x27;&#x27;</span> <span class="built_in">where</span> user=<span class="string">&#x27;root&#x27;</span>;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<h3 id="开始操作"><a href="#开始操作" class="headerlink" title="开始操作"></a>开始操作</h3><h3 id="登录自带的临时账号"><a href="#登录自带的临时账号" class="headerlink" title="登录自带的临时账号"></a>登录自带的临时账号</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo <span class="built_in">cat</span> /etc/mysql/debian.cnf</span><br><span class="line">mysql -u debian-sys-maint -p</span><br></pre></td></tr></table></figure>
+
+<h3 id="新建一个root账户来日用"><a href="#新建一个root账户来日用" class="headerlink" title="新建一个root账户来日用"></a>新建一个root账户来日用</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- &quot;%&quot;表示允许任何方式连接该账户</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;123456&#x27;</span>; #密码<span class="number">123456</span></span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
+
+<h3 id="重新登录root账户"><a href="#重新登录root账户" class="headerlink" title="重新登录root账户"></a>重新登录root账户</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
+
+<h3 id="授权所有IP允许远程连接root账户并具有修改权限"><a href="#授权所有IP允许远程连接root账户并具有修改权限" class="headerlink" title="授权所有IP允许远程连接root账户并具有修改权限"></a>授权所有IP允许远程连接root账户并具有修改权限</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> OPTION;</span><br><span class="line">FLUSH PRIVILEGES;</span><br><span class="line"><span class="comment">-- 重新登录root账号</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="取消绑定本地登录"><a href="#取消绑定本地登录" class="headerlink" title="取消绑定本地登录"></a>取消绑定本地登录</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment">#注释掉bind-address</span></span><br><span class="line">bind-address           = 127.0.0.1</span><br></pre></td></tr></table></figure>
+
+<h3 id="编辑策略开放服务器远程3306端口-tcp协议"><a href="#编辑策略开放服务器远程3306端口-tcp协议" class="headerlink" title="编辑策略开放服务器远程3306端口(tcp协议)"></a>编辑策略开放服务器远程3306端口(tcp协议)</h3><h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="https://www.cnblogs.com/RioTian/p/16066917.html">Ubuntu20.04上安装MySQL8.0（绝对保证能够正常使用）</a><br><a href="https://blog.csdn.net/akumalzw/article/details/127363667">Ubuntu 搭建 MYSQL数据库</a><br><a href="https://blog.csdn.net/qq_44866828/article/details/120005103">MySQL 8 如何修改密码</a></p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>mysql填坑</tag>
       </tags>
   </entry>
   <entry>
@@ -125,48 +139,34 @@
       </tags>
   </entry>
   <entry>
-    <title>ubuntu 配置 mysql 8.0.x 踩坑记录</title>
-    <url>/2023/04/15/ubuntu-%E9%85%8D%E7%BD%AE-mysql-8-0-x-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>因为最近有一些原因打算把MySQL数据库迁移到Ubuntu服务器中结果各种坑，为此记录一下方便日后开发</p>
-<h3 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install mysql-server</span><br></pre></td></tr></table></figure>
+    <title>给hexo博客添加live2d小人</title>
+    <url>/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/</url>
+    <content><![CDATA[<h3 id="给hexo博客添加Live2d小人"><a href="#给hexo博客添加Live2d小人" class="headerlink" title="给hexo博客添加Live2d小人"></a>给hexo博客添加Live2d小人</h3><p>我们在观看别人的博客的时候有时就会发现他们的博客里面有个很可爱的小人，那么如何在自己的hexo博客中添加小人呢?<br>有两种方法：</p>
+<p><b> 1. 安装 <code>hexo-helper-live2d</code> 模块</b></p>
+<p>安装模块</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo npm install --save hexo-helper-live2d</span><br></pre></td></tr></table></figure>
 
-<h3 id="MySQL服务管理命令"><a href="#MySQL服务管理命令" class="headerlink" title="MySQL服务管理命令"></a>MySQL服务管理命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service mysql status <span class="comment"># 查看服务状态</span></span><br><span class="line">sudo service mysql start <span class="comment"># 启动服务</span></span><br><span class="line">sudo service mysql stop <span class="comment"># 停止服务</span></span><br><span class="line">sudo service mysql restart <span class="comment"># 重启服务</span></span><br></pre></td></tr></table></figure>
+<p>然后再博客根目录的 <code>_config.yml</code> 添加如下配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># live2d</span><br><span class="line">live2d:</span><br><span class="line">  enable: true  # 是否启动</span><br><span class="line">  scriptFrom: local # 默认</span><br><span class="line">  pluginRootPath: live2dw/  # 插件在站点上的根目录(相对路径)</span><br><span class="line">  pluginJsPath: lib/  # 脚本文件相对与插件根目录路径</span><br><span class="line">  pluginModelPath: assets/  # 模型文件相对与插件根目录路径</span><br><span class="line">  tagMode: false  # 标签模式, 是否仅替换 live2d tag标签而非插入到所有页面中</span><br><span class="line">  debug: false  # 调试, 是否在控制台输出日志</span><br><span class="line">  model:</span><br><span class="line">    use: nepmaid  ## 模型文件</span><br><span class="line">  display:</span><br><span class="line">    position: right # 定位方向 left right top bottom</span><br><span class="line">    width: 150  # 小人宽度</span><br><span class="line">    height: 300 #  小人高度</span><br><span class="line">    hOffset: -15  # 向 偏移</span><br><span class="line">    vOffset: -15  # 像 偏移</span><br><span class="line">  mobile:</span><br><span class="line">    show: false  # 手机端是否显示</span><br><span class="line">  react:</span><br><span class="line">    opacity: 0.7  # 模型透明度</span><br></pre></td></tr></table></figure>
+<p><b> 注意缩进，否则配置无效 </b><br>然后 下载好 live2d 模型</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/summerscar/live2dDemo</span><br></pre></td></tr></table></figure>
 
-<h3 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt purge mysql*</span><br><span class="line">sudo <span class="built_in">rm</span> -rf /etc/mysql/ /var/lib/mysql</span><br></pre></td></tr></table></figure>
+<p>接下来在博客根目录新建一个 <code>live2d_models</code> 目录<br>在 <code>live2dDemo/assets/</code> 目录里找到你需要的模型目录 并把他们整个复制到 <code>live2d_models</code> 目录中</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">规则：live2d_models/&lt;模块名&gt;</span><br><span class="line"></span><br><span class="line">比如: live2d_models/nepmaid</span><br></pre></td></tr></table></figure>
 
-<h3 id="忘记账号密码"><a href="#忘记账号密码" class="headerlink" title="忘记账号密码"></a>忘记账号密码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在[mysqld]段下加入 skip-grant-tables</span></span><br><span class="line">sudo service mysql restart</span><br><span class="line"><span class="comment"># 然后输入 mysql登录</span></span><br></pre></td></tr></table></figure>
+<p><b> 有些模型的配置文件命名可能不规范需要自行修改文件名 </b><br><b> 打开模块文件夹 找到 <code>mode.json</code> 或者其他 改名为 &lt;模块名&gt;.mode.json </b></p>
+<p>最后修改 <code>_config.yml</code> 里面刚刚添加的 live2d 配置条目里面的:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">model:</span><br><span class="line">  use: nepmaid  ## 模型文件</span><br></pre></td></tr></table></figure>
 
-<h3 id="查询-user表-查看所有的-user-信息"><a href="#查询-user表-查看所有的-user-信息" class="headerlink" title="查询 user表 查看所有的 user 信息"></a>查询 user表 查看所有的 user 信息</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">user</span>,authentication_string,plugin,host <span class="keyword">from</span> mysql.user;</span><br></pre></td></tr></table></figure>
-
-<h3 id="查询以开放的端口号"><a href="#查询以开放的端口号" class="headerlink" title="查询以开放的端口号"></a>查询以开放的端口号</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> variables <span class="keyword">like</span> <span class="string">&#x27;port&#x27;</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="修改账户密码"><a href="#修改账户密码" class="headerlink" title="修改账户密码"></a>修改账户密码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果忘记了账户密码 需要在mysqld.cnf配置文件的 [mysqld] 段下加 skip-grant-tables</span></span><br><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在[mysqld]段下加入 skip-grant-tables</span></span><br><span class="line"><span class="comment"># 然后重启MySQL服务后输入 mysql 即可免密登录</span></span><br><span class="line"><span class="comment"># 不能直接修改密码，会报错。要先清空root密码：</span></span><br><span class="line">update user <span class="built_in">set</span> authentication_string=<span class="string">&#x27;&#x27;</span> <span class="built_in">where</span> user=<span class="string">&#x27;root&#x27;</span>;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
-
-<h3 id="开始操作"><a href="#开始操作" class="headerlink" title="开始操作"></a>开始操作</h3><h3 id="登录自带的临时账号"><a href="#登录自带的临时账号" class="headerlink" title="登录自带的临时账号"></a>登录自带的临时账号</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo <span class="built_in">cat</span> /etc/mysql/debian.cnf</span><br><span class="line">mysql -u debian-sys-maint -p</span><br></pre></td></tr></table></figure>
-
-<h3 id="新建一个root账户来日用"><a href="#新建一个root账户来日用" class="headerlink" title="新建一个root账户来日用"></a>新建一个root账户来日用</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- &quot;%&quot;表示允许任何方式连接该账户</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;123456&#x27;</span>; #密码<span class="number">123456</span></span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
-
-<h3 id="重新登录root账户"><a href="#重新登录root账户" class="headerlink" title="重新登录root账户"></a>重新登录root账户</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
-
-<h3 id="授权所有IP允许远程连接root账户并具有修改权限"><a href="#授权所有IP允许远程连接root账户并具有修改权限" class="headerlink" title="授权所有IP允许远程连接root账户并具有修改权限"></a>授权所有IP允许远程连接root账户并具有修改权限</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> OPTION;</span><br><span class="line">FLUSH PRIVILEGES;</span><br><span class="line"><span class="comment">-- 重新登录root账号</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="取消绑定本地登录"><a href="#取消绑定本地登录" class="headerlink" title="取消绑定本地登录"></a>取消绑定本地登录</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment">#注释掉bind-address</span></span><br><span class="line">bind-address           = 127.0.0.1</span><br></pre></td></tr></table></figure>
-
-<h3 id="编辑策略开放服务器远程3306端口-tcp协议"><a href="#编辑策略开放服务器远程3306端口-tcp协议" class="headerlink" title="编辑策略开放服务器远程3306端口(tcp协议)"></a>编辑策略开放服务器远程3306端口(tcp协议)</h3><h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="https://www.cnblogs.com/RioTian/p/16066917.html">Ubuntu20.04上安装MySQL8.0（绝对保证能够正常使用）</a><br><a href="https://blog.csdn.net/akumalzw/article/details/127363667">Ubuntu 搭建 MYSQL数据库</a><br><a href="https://blog.csdn.net/qq_44866828/article/details/120005103">MySQL 8 如何修改密码</a></p>
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-      <tags>
-        <tag>mysql填坑</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>随机图片api接口网站</title>
-    <url>/2023/12/21/%E9%9A%8F%E6%9C%BA%E5%9B%BE%E7%89%87api%E6%8E%A5%E5%8F%A3%E7%BD%91%E7%AB%99/</url>
-    <content><![CDATA[<h2 id="原文跳转"><a href="#原文跳转" class="headerlink" title="原文跳转"></a><a href="https://blog.csdn.net/SectSnow/article/details/115835711">原文跳转</a></h2><figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">樱花：https://www.dmoe.cc/random.php</span><br><span class="line">晓晴博客：https://acg.toubiec.cn/random.php</span><br><span class="line">Unsplash Source | API Documentation：详情请看官网介绍</span><br><span class="line">夏沫博客：https://cdn.seovx.com/?mom=302</span><br><span class="line">https://cdn.seovx.com/d/?mom=302</span><br><span class="line">https://cdn.seovx.com/ha/?mom=302</span><br><span class="line">二次元随机图：https://api.blogbig.cn/random/api.php</span><br><span class="line">搏天api：https://api.btstu.cn/sjbz/api.php</span><br><span class="line">姬长信API For Docker：</span><br><span class="line">----每日bing：https://api.isoyu.com/bing_images.php</span><br><span class="line">----美女图片壁纸：https://api.isoyu.com/mm_images.php</span><br><span class="line">----网红专栏壁纸：https://api.isoyu.com/beibei_images.php</span><br><span class="line">----动态IP签名图片：https://api.isoyu.com/ip_images.php?signature=早安</span><br><span class="line">----ARU(阿鲁)表情包：https://api.isoyu.com/ARU_GIF_S.php</span><br><span class="line">樱道：https://api.r10086.com/动漫综合1.php （网站中有更多api接口）</span><br><span class="line">小歪API：https://api.ixiaowai.cn/api/api.php（二次元动漫）</span><br><span class="line">https://api.ixiaowai.cn/mcapi/mcapi.php（mc酱动漫）</span><br><span class="line">https://api.ixiaowai.cn/gqapi/gqapi.php（高清壁纸）</span><br><span class="line">保罗｜API：https://api.paugram.com/wallpaper/</span><br><span class="line">墨天逸：https://api.mtyqx.cn/tapi/random.php</span><br><span class="line">EEE.DOG：https://api.yimian.xyz/img</span><br><span class="line">动漫星空：https://api.dongmanxingkong.com/suijitupian/acg/1080p/index.php</span><br><span class="line">岁月小筑：#https调用https://img.xjh.me/random_img.php</span><br><span class="line">#http调用http://img.xjh.me/random_img.php</span><br><span class="line">东方Project：https://img.paulzzh.tech/touhou/random</span><br></pre></td></tr></table></figure>
-
-<h2 id="自用api"><a href="#自用api" class="headerlink" title="自用api"></a>自用api</h2><p><a href="https://img.xjh.me/random_img.php?return=acg">岁月小筑API</a></p>
+<p><b> 大功告成 最后输入 </b></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+<p>然后清除一下浏览器缓存，打开后就可以发现我们添加的小人已经在你的博客里面看着你了</p>
+<p><b> 2.使用 <code>live2d-widget</code> 项目</b><br>github 地址: <a href="https://github.com/stevenjoezhang/live2d-widget">https://github.com/stevenjoezhang/live2d-widget</a><br><b> 这个比较复杂 需要一定的代码基础 </b></p>
+<p>如果你是小白，或者只需要最基础的功能，那么只用将这一行代码加入到你主题文件夹里面的布局文件 找到带有 <code>head</code> 或 <code>body</code> 标签的布局文件中 </p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>更多请参考官方文档 <a href="https://github.com/stevenjoezhang/live2d-widget/blob/master/README.md">https://github.com/stevenjoezhang/live2d-widget/blob/master/README.md</a><br>或者 <a href="https://www.bilibili.com/read/cv18133283/">https://www.bilibili.com/read/cv18133283/</a></p>
+<h3 id="效果演示"><a href="#效果演示" class="headerlink" title="效果演示"></a>效果演示</h3><p><code>hexo-helper-live2d</code><br><img src="/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/1.png"></p>
+<p><code>live2d-widget</code><br><img src="/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/2.png"></p>
 ]]></content>
       <categories>
         <category>博客</category>
