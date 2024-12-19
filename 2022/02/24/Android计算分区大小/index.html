@@ -1,0 +1,181 @@
+<!DOCTYPE html><html lang="zh-CN" data-theme="light"><head><meta charset="UTF-8"><meta http-equiv="X-UA-Compatible" content="IE=edge"><meta name="viewport" content="width=device-width, initial-scale=1.0,viewport-fit=cover"><title>Android计算分区大小 | 小新大大的博客</title><meta name="author" content="小新大大"><meta name="copyright" content="小新大大"><meta name="format-detection" content="telephone=no"><meta name="theme-color" content="ffffff"><meta name="description" content="原文跳转在为 Android 设备撰写 Device Tree 时不免会遇到分区大小的计算，这里我找到了一些简单的方法，记录下来避免以后踩坑。 首先是 BOARD_FLASH_BLOCK_SIZE，用 BOARD_KERNEL_PAGESIZE 的值乘以 64 即可 其次是众大多分区，我们可以用 dd of&#x3D;&#x2F;dev&#x2F;null if&#x3D;partition 命令">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Android计算分区大小">
+<meta property="og:url" content="https://xiaoxindada.github.io/2022/02/24/Android%E8%AE%A1%E7%AE%97%E5%88%86%E5%8C%BA%E5%A4%A7%E5%B0%8F/index.html">
+<meta property="og:site_name" content="小新大大的博客">
+<meta property="og:description" content="原文跳转在为 Android 设备撰写 Device Tree 时不免会遇到分区大小的计算，这里我找到了一些简单的方法，记录下来避免以后踩坑。 首先是 BOARD_FLASH_BLOCK_SIZE，用 BOARD_KERNEL_PAGESIZE 的值乘以 64 即可 其次是众大多分区，我们可以用 dd of&#x3D;&#x2F;dev&#x2F;null if&#x3D;partition 命令">
+<meta property="og:locale" content="zh_CN">
+<meta property="og:image" content="https://avatars.githubusercontent.com/u/55313524?v=4">
+<meta property="article:published_time" content="2022-02-24T10:47:32.000Z">
+<meta property="article:modified_time" content="2024-12-19T15:38:45.367Z">
+<meta property="article:author" content="小新大大">
+<meta property="article:tag" content="分区">
+<meta name="twitter:card" content="summary">
+<meta name="twitter:image" content="https://avatars.githubusercontent.com/u/55313524?v=4"><link rel="shortcut icon" href="/img/avatar.png"><link rel="canonical" href="https://xiaoxindada.github.io/2022/02/24/Android%E8%AE%A1%E7%AE%97%E5%88%86%E5%8C%BA%E5%A4%A7%E5%B0%8F/index.html"><link rel="preconnect" href="//cdn.jsdelivr.net"/><link rel="preconnect" href="//busuanzi.ibruce.info"/><link rel="stylesheet" href="/css/index.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free/css/all.min.css"><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.min.css" media="print" onload="this.media='all'"><script>const GLOBAL_CONFIG = {
+  root: '/',
+  algolia: undefined,
+  localSearch: undefined,
+  translate: undefined,
+  noticeOutdate: undefined,
+  highlight: {"plugin":"highlight.js","highlightCopy":true,"highlightLang":true,"highlightHeightLimit":false},
+  copy: {
+    success: '复制成功',
+    error: '复制错误',
+    noSupport: '浏览器不支持'
+  },
+  relativeDate: {
+    homepage: false,
+    post: false
+  },
+  runtime: '',
+  dateSuffix: {
+    just: '刚刚',
+    min: '分钟前',
+    hour: '小时前',
+    day: '天前',
+    month: '个月前'
+  },
+  copyright: undefined,
+  lightbox: 'fancybox',
+  Snackbar: undefined,
+  infinitegrid: {
+    js: 'https://cdn.jsdelivr.net/npm/@egjs/infinitegrid/dist/infinitegrid.min.js',
+    buttonText: '加载更多'
+  },
+  isPhotoFigcaption: false,
+  islazyload: false,
+  isAnchor: false,
+  percent: {
+    toc: true,
+    rightside: false,
+  },
+  autoDarkmode: false
+}</script><script id="config-diff">var GLOBAL_CONFIG_SITE = {
+  title: 'Android计算分区大小',
+  isPost: true,
+  isHome: false,
+  isHighlightShrink: false,
+  isToc: true,
+  postUpdate: '2024-12-19 23:38:45'
+}</script><script>(win=>{
+      win.saveToLocal = {
+        set: (key, value, ttl) => {
+          if (ttl === 0) return
+          const now = Date.now()
+          const expiry = now + ttl * 86400000
+          const item = {
+            value,
+            expiry
+          }
+          localStorage.setItem(key, JSON.stringify(item))
+        },
+      
+        get: key => {
+          const itemStr = localStorage.getItem(key)
+      
+          if (!itemStr) {
+            return undefined
+          }
+          const item = JSON.parse(itemStr)
+          const now = Date.now()
+      
+          if (now > item.expiry) {
+            localStorage.removeItem(key)
+            return undefined
+          }
+          return item.value
+        }
+      }
+    
+      win.getScript = (url, attr = {}) => new Promise((resolve, reject) => {
+        const script = document.createElement('script')
+        script.src = url
+        script.async = true
+        script.onerror = reject
+        script.onload = script.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          script.onload = script.onreadystatechange = null
+          resolve()
+        }
+
+        Object.keys(attr).forEach(key => {
+          script.setAttribute(key, attr[key])
+        })
+
+        document.head.appendChild(script)
+      })
+    
+      win.getCSS = (url, id = false) => new Promise((resolve, reject) => {
+        const link = document.createElement('link')
+        link.rel = 'stylesheet'
+        link.href = url
+        if (id) link.id = id
+        link.onerror = reject
+        link.onload = link.onreadystatechange = function() {
+          const loadState = this.readyState
+          if (loadState && loadState !== 'loaded' && loadState !== 'complete') return
+          link.onload = link.onreadystatechange = null
+          resolve()
+        }
+        document.head.appendChild(link)
+      })
+    
+      win.activateDarkMode = () => {
+        document.documentElement.setAttribute('data-theme', 'dark')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', '#0d0d0d')
+        }
+      }
+      win.activateLightMode = () => {
+        document.documentElement.setAttribute('data-theme', 'light')
+        if (document.querySelector('meta[name="theme-color"]') !== null) {
+          document.querySelector('meta[name="theme-color"]').setAttribute('content', 'ffffff')
+        }
+      }
+      const t = saveToLocal.get('theme')
+    
+        if (t === 'dark') activateDarkMode()
+        else if (t === 'light') activateLightMode()
+      
+      const asideStatus = saveToLocal.get('aside-status')
+      if (asideStatus !== undefined) {
+        if (asideStatus === 'hide') {
+          document.documentElement.classList.add('hide-aside')
+        } else {
+          document.documentElement.classList.remove('hide-aside')
+        }
+      }
+    
+      const detectApple = () => {
+        if(/iPad|iPhone|iPod|Macintosh/.test(navigator.userAgent)){
+          document.documentElement.classList.add('apple')
+        }
+      }
+      detectApple()
+    })(window)</script><script src="/live2d-widget/autoload.js"></script><meta name="generator" content="Hexo 6.0.0"></head><body><div id="sidebar"><div id="menu-mask"></div><div id="sidebar-menus"><div class="avatar-img is-center"><img src="https://avatars.githubusercontent.com/u/55313524?v=4" onerror="onerror=null;src='/img/friend_404.gif'" alt="avatar"/></div><div class="sidebar-site-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><hr class="custom-hr"/><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 类别</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div></div></div><div class="post" id="body-wrap"><header class="post-bg" id="page-header" style="background-image: url('/img/top_img.jpg')"><nav id="nav"><span id="blog-info"><a href="/" title="小新大大的博客"><span class="site-name">小新大大的博客</span></a></span><div id="menus"><div class="menus_items"><div class="menus_item"><a class="site-page" href="/"><i class="fa-fw fas fa-home"></i><span> 主页</span></a></div><div class="menus_item"><a class="site-page" href="/archives/"><i class="fa-fw fas fa-archive"></i><span> 归档</span></a></div><div class="menus_item"><a class="site-page" href="/tags/"><i class="fa-fw fas fa-tags"></i><span> 标签</span></a></div><div class="menus_item"><a class="site-page" href="/categories/"><i class="fa-fw fas fa-folder-open"></i><span> 类别</span></a></div><div class="menus_item"><a class="site-page" href="/about/"><i class="fa-fw fas fa-heart"></i><span> 关于</span></a></div></div><div id="toggle-menu"><a class="site-page" href="javascript:void(0);"><i class="fas fa-bars fa-fw"></i></a></div></div></nav><div id="post-info"><h1 class="post-title">Android计算分区大小</h1><div id="post-meta"><div class="meta-firstline"><span class="post-meta-date"><i class="far fa-calendar-alt fa-fw post-meta-icon"></i><span class="post-meta-label">发表于</span><time class="post-meta-date-created" datetime="2022-02-24T10:47:32.000Z" title="发表于 2022-02-24 18:47:32">2022-02-24</time><span class="post-meta-separator">|</span><i class="fas fa-history fa-fw post-meta-icon"></i><span class="post-meta-label">更新于</span><time class="post-meta-date-updated" datetime="2024-12-19T15:38:45.367Z" title="更新于 2024-12-19 23:38:45">2024-12-19</time></span><span class="post-meta-categories"><span class="post-meta-separator">|</span><i class="fas fa-inbox fa-fw post-meta-icon"></i><a class="post-meta-categories" href="/categories/Android/">Android</a></span></div><div class="meta-secondline"><span class="post-meta-separator">|</span><span class="post-meta-pv-cv" id="" data-flag-title="Android计算分区大小"><i class="far fa-eye fa-fw post-meta-icon"></i><span class="post-meta-label">阅读量:</span><span id="busuanzi_value_page_pv"><i class="fa-solid fa-spinner fa-spin"></i></span></span></div></div></div></header><main class="layout" id="content-inner"><div id="post"><article class="post-content" id="article-container"><h2 id="原文跳转"><a href="#原文跳转" class="headerlink" title="原文跳转"></a><a target="_blank" rel="noopener" href="https://www.neko.ink/2021/02/17/android-partition/">原文跳转</a></h2><p>在为 Android 设备撰写 Device Tree 时不免会遇到分区大小的计算，这里我找到了一些简单的方法，记录下来避免以后踩坑。</p>
+<p>首先是 BOARD_FLASH_BLOCK_SIZE，用 BOARD_KERNEL_PAGESIZE 的值乘以 64 即可</p>
+<p>其次是众大多分区，我们可以用 dd of&#x3D;&#x2F;dev&#x2F;null if&#x3D;partition 命令来获取大小，但对于大分区来说耗时太长，而且需要root权限</p>
+<p>转而一想，为什么不能扒 linux 分区表从而直接获取大小呢</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br><span class="line">38</span><br><span class="line">39</span><br><span class="line">40</span><br><span class="line">41</span><br><span class="line">42</span><br></pre></td><td class="code"><pre><span class="line">sawshark:/ $ <span class="built_in">cat</span> /proc/partitions</span><br><span class="line">major minor  <span class="comment">#blocks  name</span></span><br><span class="line"></span><br><span class="line"> 254        0     262144 zram0</span><br><span class="line"> 179        0    3817472 mmcblk0</span><br><span class="line"> 179        1        512 mmcblk0p1</span><br><span class="line"> 179        2        512 mmcblk0p2</span><br><span class="line"> 179        3        512 mmcblk0p3</span><br><span class="line"> 179        4        512 mmcblk0p4</span><br><span class="line"> 179        5        768 mmcblk0p5</span><br><span class="line"> 179        6        768 mmcblk0p6</span><br><span class="line"> 179        7       5120 mmcblk0p7</span><br><span class="line"> 179        8       5120 mmcblk0p8</span><br><span class="line"> 179        9      10240 mmcblk0p9</span><br><span class="line"> 179       10       5120 mmcblk0p10</span><br><span class="line"> 179       11       4096 mmcblk0p11</span><br><span class="line"> 179       12       4096 mmcblk0p12</span><br><span class="line"> 179       13          1 mmcblk0p13</span><br><span class="line"> 179       14          8 mmcblk0p14</span><br><span class="line"> 179       15       1024 mmcblk0p15</span><br><span class="line"> 179       16      10240 mmcblk0p16</span><br><span class="line"> 179       17        512 mmcblk0p17</span><br><span class="line"> 179       18        512 mmcblk0p18</span><br><span class="line"> 179       19       5120 mmcblk0p19</span><br><span class="line"> 179       20      10240 mmcblk0p20</span><br><span class="line"> 179       21         32 mmcblk0p21</span><br><span class="line"> 179       22       4096 mmcblk0p22</span><br><span class="line"> 179       23       4096 mmcblk0p23</span><br><span class="line"> 179       24        256 mmcblk0p24</span><br><span class="line"> 179       25        256 mmcblk0p25</span><br><span class="line"> 179       26        256 mmcblk0p26</span><br><span class="line"> 179       27        256 mmcblk0p27</span><br><span class="line"> 179       28      10240 mmcblk0p28</span><br><span class="line"> 179       29      32768 mmcblk0p29</span><br><span class="line"> 179       30         16 mmcblk0p30</span><br><span class="line"> 179       31      32768 mmcblk0p31</span><br><span class="line"> 259        0     111568 mmcblk0p32</span><br><span class="line"> 259        1    1048576 mmcblk0p33</span><br><span class="line"> 259        2      65536 mmcblk0p34</span><br><span class="line"> 259        3    2436564 mmcblk0p35</span><br><span class="line"> 179       32        512 mmcblk0rpmb</span><br><span class="line"> 253        0    1032176 dm-0</span><br></pre></td></tr></table></figure>
+
+<p><code>blocks</code> 为块设备总块数，每个块是 1024 字节，等同于 KB<br><code>name</code> 就是 块设备名称 了，通过列目录可以很方便找到 可读名称 和 块设备名称 的关系</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br><span class="line">24</span><br><span class="line">25</span><br><span class="line">26</span><br><span class="line">27</span><br><span class="line">28</span><br><span class="line">29</span><br><span class="line">30</span><br><span class="line">31</span><br><span class="line">32</span><br><span class="line">33</span><br><span class="line">34</span><br><span class="line">35</span><br><span class="line">36</span><br><span class="line">37</span><br></pre></td><td class="code"><pre><span class="line">sawshark:/ $ <span class="built_in">ls</span> -l /dev/block/bootdevice/by-name</span><br><span class="line">total 0</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 DDR -&gt; /dev/block/mmcblk0p21</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 aboot -&gt; /dev/block/mmcblk0p7</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 abootbak -&gt; /dev/block/mmcblk0p8</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 boot -&gt; /dev/block/mmcblk0p29</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 cache -&gt; /dev/block/mmcblk0p34</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 cmnlib -&gt; /dev/block/mmcblk0p24</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 cmnlibbak -&gt; /dev/block/mmcblk0p25</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 config -&gt; /dev/block/mmcblk0p18</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 devinfo -&gt; /dev/block/mmcblk0p23</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 fsc -&gt; /dev/block/mmcblk0p13</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 fsg -&gt; /dev/block/mmcblk0p22</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 keymaster -&gt; /dev/block/mmcblk0p26</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 keymasterbak -&gt; /dev/block/mmcblk0p27</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 keystore -&gt; /dev/block/mmcblk0p17</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 misc -&gt; /dev/block/mmcblk0p15</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 modem -&gt; /dev/block/mmcblk0p32</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 modemst1 -&gt; /dev/block/mmcblk0p11</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 modemst2 -&gt; /dev/block/mmcblk0p12</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 nfc -&gt; /dev/block/mmcblk0p19</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 nvbin -&gt; /dev/block/mmcblk0p10</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 nvdata -&gt; /dev/block/mmcblk0p9</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 oem -&gt; /dev/block/mmcblk0p28</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 recovery -&gt; /dev/block/mmcblk0p31</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 reserved -&gt; /dev/block/mmcblk0p20</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 rpm -&gt; /dev/block/mmcblk0p3</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 rpmbak -&gt; /dev/block/mmcblk0p4</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 sbl1 -&gt; /dev/block/mmcblk0p1</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 sbl1bak -&gt; /dev/block/mmcblk0p2</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 sec -&gt; /dev/block/mmcblk0p30</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 splash -&gt; /dev/block/mmcblk0p16</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 ssd -&gt; /dev/block/mmcblk0p14</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 system -&gt; /dev/block/mmcblk0p33</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 tz -&gt; /dev/block/mmcblk0p5</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 tzbak -&gt; /dev/block/mmcblk0p6</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 userdata -&gt; /dev/block/mmcblk0p35</span><br></pre></td></tr></table></figure>
+
+<p>综合以上，用awk套娃一个自动化脚本</p>
+<p>安卓设备默认是不带awk的，所以需要通过电脑套娃</p>
+<p>这里以wsl运行环境为例，如果不是wsl自行更改 <code>call_cat</code> 和 <code>call_ls</code> 两个变量即可</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br></pre></td><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">call_cat=<span class="string">&quot;adb.exe shell cat&quot;</span> <span class="comment"># cat命令</span></span><br><span class="line">call_ls=<span class="string">&quot;adb.exe shell ls&quot;</span> <span class="comment"># ls命令</span></span><br><span class="line">name_base=<span class="string">&quot;/dev/block/bootdevice&quot;</span> <span class="comment"># by-name的上级目录，一般不用动</span></span><br><span class="line"><span class="keyword">if</span> [[ -n <span class="variable">$1</span> ]]; <span class="keyword">then</span></span><br><span class="line">  block_name=$(<span class="variable">$&#123;call_ls&#125;</span> -la <span class="variable">$&#123;name_base&#125;</span>/by-name/<span class="variable">$1</span> 2&gt;/dev/null | awk -F <span class="string">&quot; -&gt; /dev/block/&quot;</span> <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>) <span class="comment"># 将 分区可读名称 转换为 块设备名称</span></span><br><span class="line">  <span class="keyword">if</span> [[ -n <span class="variable">$&#123;block_name&#125;</span> ]]; <span class="keyword">then</span></span><br><span class="line">    <span class="variable">$&#123;call_cat&#125;</span> /proc/partitions | grep <span class="variable">$&#123;block_name&#125;</span> | awk -F <span class="string">&quot; &quot;</span> <span class="string">&#x27;&#123;print $3 * 1024&#125;&#x27;</span> <span class="comment"># 输出单位为 Byte</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Error: partition <span class="variable">$1</span> not found&quot;</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Usage: <span class="variable">$0</span> [partition name]&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<p>运行测试</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">mlgmxyysd@MlgmXyysd-NUC:~$ ./partitions.sh</span><br><span class="line">Usage: ./partitions.sh [partition name]</span><br><span class="line">mlgmxyysd@MlgmXyysd-NUC:~$ ./partitions.sh non_exist_partition</span><br><span class="line">Error: partition non_exist_partition not found</span><br><span class="line">mlgmxyysd@MlgmXyysd-NUC:~$ ./partitions.sh system</span><br><span class="line">1073741824</span><br></pre></td></tr></table></figure>
+
+<p>与上方输出计算结果一致，成功</p>
+<p>更新：上面的方式在一些设备中可能会被SELinux挡掉</p>
+<p>其实还有一种更简单的方式</p>
+<p>重启设备至 <code>fastboot</code> 或 <code>bootloader</code> 模式</p>
+<figure class="highlight bash"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br></pre></td><td class="code"><pre><span class="line">fastboot getvar partition-size:[partition name]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 例如：</span></span><br><span class="line">mlgmxyysd@MlgmXyysd-NUC:~$ fastboot.exe getvar partition-size:system</span><br><span class="line">partition-size:system:   0x40000000</span><br><span class="line">Finished. Total time: 0.116s</span><br></pre></td></tr></table></figure>
+
+<p>返回值转换为 DEC 为 1073741824 ，单位为 Byte</p>
+<p>感谢：<a target="_blank" rel="noopener" href="https://blog.779.moe/archives/7/">TH779</a></p>
+</article><div class="post-copyright"><div class="post-copyright__author"><span class="post-copyright-meta"><i class="fas fa-circle-user fa-fw"></i>文章作者: </span><span class="post-copyright-info"><a href="https://xiaoxindada.github.io">小新大大</a></span></div><div class="post-copyright__type"><span class="post-copyright-meta"><i class="fas fa-square-arrow-up-right fa-fw"></i>文章链接: </span><span class="post-copyright-info"><a href="https://xiaoxindada.github.io/2022/02/24/Android%E8%AE%A1%E7%AE%97%E5%88%86%E5%8C%BA%E5%A4%A7%E5%B0%8F/">https://xiaoxindada.github.io/2022/02/24/Android%E8%AE%A1%E7%AE%97%E5%88%86%E5%8C%BA%E5%A4%A7%E5%B0%8F/</a></span></div><div class="post-copyright__notice"><span class="post-copyright-meta"><i class="fas fa-circle-exclamation fa-fw"></i>版权声明: </span><span class="post-copyright-info">本博客所有文章除特别声明外，均采用 <a href="https://creativecommons.org/licenses/by-nc-sa/4.0/" target="_blank">CC BY-NC-SA 4.0</a> 许可协议。转载请注明来自 <a href="https://xiaoxindada.github.io" target="_blank">小新大大的博客</a>！</span></div></div><div class="tag_share"><div class="post-meta__tag-list"><a class="post-meta__tags" href="/tags/%E5%88%86%E5%8C%BA/">分区</a></div><div class="post_share"><div class="social-share" data-image="https://avatars.githubusercontent.com/u/55313524?v=4" data-sites="facebook,twitter,wechat,weibo,qq"></div><link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/css/share.min.css" media="print" onload="this.media='all'"><script src="https://cdn.jsdelivr.net/npm/butterfly-extsrc/sharejs/dist/js/social-share.min.js" defer></script></div></div><nav class="pagination-post" id="pagination"><div class="prev-post pull-left"><a href="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" title="hexo diaspora 主题 gitalk 插件踩坑记录"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">上一篇</div><div class="prev_info">hexo diaspora 主题 gitalk 插件踩坑记录</div></div></a></div><div class="next-post pull-right"><a href="/2022/02/23/helloblog/" title="HelloBlog"><div class="cover" style="background: var(--default-bg-color)"></div><div class="pagination-info"><div class="label">下一篇</div><div class="next_info">HelloBlog</div></div></a></div></nav></div><div class="aside-content" id="aside-content"><div class="card-widget card-info"><div class="is-center"><div class="avatar-img"><img src="https://avatars.githubusercontent.com/u/55313524?v=4" onerror="this.onerror=null;this.src='/img/friend_404.gif'" alt="avatar"/></div><div class="author-info__name">小新大大</div><div class="author-info__description"></div></div><div class="card-info-data site-data is-center"><a href="/archives/"><div class="headline">文章</div><div class="length-num">6</div></a><a href="/tags/"><div class="headline">标签</div><div class="length-num">4</div></a><a href="/categories/"><div class="headline">分类</div><div class="length-num">3</div></a></div><a id="card-info-btn" target="_blank" rel="noopener" href="https://github.com/xiaoxindada"><i class="fab fa-github"></i><span>Follow Me</span></a><div class="card-info-social-icons is-center"><a class="social-icon" href="https://github.com/xiaoxindada" target="_blank" title="Github"><i class="fab fa-github" style="color: #24292e;"></i></a></div></div><div class="card-widget card-announcement"><div class="item-headline"><i class="fas fa-bullhorn fa-shake"></i><span>公告</span></div><div class="announcement_content">欢迎来到我的博客</div></div><div class="sticky_layout"><div class="card-widget" id="card-toc"><div class="item-headline"><i class="fas fa-stream"></i><span>目录</span><span class="toc-percentage"></span></div><div class="toc-content"><ol class="toc"><li class="toc-item toc-level-2"><a class="toc-link" href="#%E5%8E%9F%E6%96%87%E8%B7%B3%E8%BD%AC"><span class="toc-number">1.</span> <span class="toc-text">原文跳转</span></a></li></ol></div></div><div class="card-widget card-recent-post"><div class="item-headline"><i class="fas fa-history"></i><span>最新文章</span></div><div class="aside-list"><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/12/21/%E9%9A%8F%E6%9C%BA%E5%9B%BE%E7%89%87api%E6%8E%A5%E5%8F%A3%E7%BD%91%E7%AB%99/" title="随机图片api接口网站">随机图片api接口网站</a><time datetime="2023-12-21T07:24:06.000Z" title="发表于 2023-12-21 15:24:06">2023-12-21</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/04/15/ubuntu-%E9%85%8D%E7%BD%AE-mysql-8-0-x-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" title="ubuntu 配置 mysql 8.0.x 踩坑记录">ubuntu 配置 mysql 8.0.x 踩坑记录</a><time datetime="2023-04-14T18:07:26.000Z" title="发表于 2023-04-15 02:07:26">2023-04-15</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/" title="给hexo博客添加live2d小人">给hexo博客添加live2d小人</a><time datetime="2023-01-10T23:16:05.000Z" title="发表于 2023-01-11 07:16:05">2023-01-11</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/" title="hexo diaspora 主题 gitalk 插件踩坑记录">hexo diaspora 主题 gitalk 插件踩坑记录</a><time datetime="2022-02-25T04:24:45.000Z" title="发表于 2022-02-25 12:24:45">2022-02-25</time></div></div><div class="aside-list-item no-cover"><div class="content"><a class="title" href="/2022/02/24/Android%E8%AE%A1%E7%AE%97%E5%88%86%E5%8C%BA%E5%A4%A7%E5%B0%8F/" title="Android计算分区大小">Android计算分区大小</a><time datetime="2022-02-24T10:47:32.000Z" title="发表于 2022-02-24 18:47:32">2022-02-24</time></div></div></div></div></div></div></main><footer id="footer"><div id="footer-wrap"><div class="copyright">&copy;2020 - 2024 By 小新大大</div><div class="framework-info"><span>框架 </span><a target="_blank" rel="noopener" href="https://hexo.io">Hexo</a><span class="footer-separator">|</span><span>主题 </span><a target="_blank" rel="noopener" href="https://github.com/jerryc127/hexo-theme-butterfly">Butterfly</a></div></div></footer></div><div id="rightside"><div id="rightside-config-hide"><button id="readmode" type="button" title="阅读模式"><i class="fas fa-book-open"></i></button><button id="darkmode" type="button" title="浅色和深色模式转换"><i class="fas fa-adjust"></i></button><button id="hide-aside-btn" type="button" title="单栏和双栏切换"><i class="fas fa-arrows-alt-h"></i></button></div><div id="rightside-config-show"><button id="rightside-config" type="button" title="设置"><i class="fas fa-cog fa-spin"></i></button><button class="close" id="mobile-toc-button" type="button" title="目录"><i class="fas fa-list-ul"></i></button><button id="go-up" type="button" title="回到顶部"><span class="scroll-percent"></span><i class="fas fa-arrow-up"></i></button></div></div><div><script src="/js/utils.js"></script><script src="/js/main.js"></script><script src="https://cdn.jsdelivr.net/npm/@fancyapps/ui/dist/fancybox/fancybox.umd.min.js"></script><div class="js-pjax"></div><script async data-pjax src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script></div></body></html>

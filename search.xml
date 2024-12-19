@@ -1,0 +1,176 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Android计算分区大小</title>
+    <url>/2022/02/24/Android%E8%AE%A1%E7%AE%97%E5%88%86%E5%8C%BA%E5%A4%A7%E5%B0%8F/</url>
+    <content><![CDATA[<h2 id="原文跳转"><a href="#原文跳转" class="headerlink" title="原文跳转"></a><a href="https://www.neko.ink/2021/02/17/android-partition/">原文跳转</a></h2><p>在为 Android 设备撰写 Device Tree 时不免会遇到分区大小的计算，这里我找到了一些简单的方法，记录下来避免以后踩坑。</p>
+<p>首先是 BOARD_FLASH_BLOCK_SIZE，用 BOARD_KERNEL_PAGESIZE 的值乘以 64 即可</p>
+<p>其次是众大多分区，我们可以用 dd of&#x3D;&#x2F;dev&#x2F;null if&#x3D;partition 命令来获取大小，但对于大分区来说耗时太长，而且需要root权限</p>
+<p>转而一想，为什么不能扒 linux 分区表从而直接获取大小呢</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sawshark:/ $ <span class="built_in">cat</span> /proc/partitions</span><br><span class="line">major minor  <span class="comment">#blocks  name</span></span><br><span class="line"></span><br><span class="line"> 254        0     262144 zram0</span><br><span class="line"> 179        0    3817472 mmcblk0</span><br><span class="line"> 179        1        512 mmcblk0p1</span><br><span class="line"> 179        2        512 mmcblk0p2</span><br><span class="line"> 179        3        512 mmcblk0p3</span><br><span class="line"> 179        4        512 mmcblk0p4</span><br><span class="line"> 179        5        768 mmcblk0p5</span><br><span class="line"> 179        6        768 mmcblk0p6</span><br><span class="line"> 179        7       5120 mmcblk0p7</span><br><span class="line"> 179        8       5120 mmcblk0p8</span><br><span class="line"> 179        9      10240 mmcblk0p9</span><br><span class="line"> 179       10       5120 mmcblk0p10</span><br><span class="line"> 179       11       4096 mmcblk0p11</span><br><span class="line"> 179       12       4096 mmcblk0p12</span><br><span class="line"> 179       13          1 mmcblk0p13</span><br><span class="line"> 179       14          8 mmcblk0p14</span><br><span class="line"> 179       15       1024 mmcblk0p15</span><br><span class="line"> 179       16      10240 mmcblk0p16</span><br><span class="line"> 179       17        512 mmcblk0p17</span><br><span class="line"> 179       18        512 mmcblk0p18</span><br><span class="line"> 179       19       5120 mmcblk0p19</span><br><span class="line"> 179       20      10240 mmcblk0p20</span><br><span class="line"> 179       21         32 mmcblk0p21</span><br><span class="line"> 179       22       4096 mmcblk0p22</span><br><span class="line"> 179       23       4096 mmcblk0p23</span><br><span class="line"> 179       24        256 mmcblk0p24</span><br><span class="line"> 179       25        256 mmcblk0p25</span><br><span class="line"> 179       26        256 mmcblk0p26</span><br><span class="line"> 179       27        256 mmcblk0p27</span><br><span class="line"> 179       28      10240 mmcblk0p28</span><br><span class="line"> 179       29      32768 mmcblk0p29</span><br><span class="line"> 179       30         16 mmcblk0p30</span><br><span class="line"> 179       31      32768 mmcblk0p31</span><br><span class="line"> 259        0     111568 mmcblk0p32</span><br><span class="line"> 259        1    1048576 mmcblk0p33</span><br><span class="line"> 259        2      65536 mmcblk0p34</span><br><span class="line"> 259        3    2436564 mmcblk0p35</span><br><span class="line"> 179       32        512 mmcblk0rpmb</span><br><span class="line"> 253        0    1032176 dm-0</span><br></pre></td></tr></table></figure>
+
+<p><code>blocks</code> 为块设备总块数，每个块是 1024 字节，等同于 KB<br><code>name</code> 就是 块设备名称 了，通过列目录可以很方便找到 可读名称 和 块设备名称 的关系</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sawshark:/ $ <span class="built_in">ls</span> -l /dev/block/bootdevice/by-name</span><br><span class="line">total 0</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 DDR -&gt; /dev/block/mmcblk0p21</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 aboot -&gt; /dev/block/mmcblk0p7</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 abootbak -&gt; /dev/block/mmcblk0p8</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 boot -&gt; /dev/block/mmcblk0p29</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 cache -&gt; /dev/block/mmcblk0p34</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 cmnlib -&gt; /dev/block/mmcblk0p24</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 cmnlibbak -&gt; /dev/block/mmcblk0p25</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 config -&gt; /dev/block/mmcblk0p18</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 devinfo -&gt; /dev/block/mmcblk0p23</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 fsc -&gt; /dev/block/mmcblk0p13</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 fsg -&gt; /dev/block/mmcblk0p22</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 keymaster -&gt; /dev/block/mmcblk0p26</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 keymasterbak -&gt; /dev/block/mmcblk0p27</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 keystore -&gt; /dev/block/mmcblk0p17</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 misc -&gt; /dev/block/mmcblk0p15</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 modem -&gt; /dev/block/mmcblk0p32</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 modemst1 -&gt; /dev/block/mmcblk0p11</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 modemst2 -&gt; /dev/block/mmcblk0p12</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 nfc -&gt; /dev/block/mmcblk0p19</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 nvbin -&gt; /dev/block/mmcblk0p10</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 nvdata -&gt; /dev/block/mmcblk0p9</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 oem -&gt; /dev/block/mmcblk0p28</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 recovery -&gt; /dev/block/mmcblk0p31</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 reserved -&gt; /dev/block/mmcblk0p20</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 rpm -&gt; /dev/block/mmcblk0p3</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 rpmbak -&gt; /dev/block/mmcblk0p4</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 sbl1 -&gt; /dev/block/mmcblk0p1</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 sbl1bak -&gt; /dev/block/mmcblk0p2</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 sec -&gt; /dev/block/mmcblk0p30</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 splash -&gt; /dev/block/mmcblk0p16</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 ssd -&gt; /dev/block/mmcblk0p14</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 system -&gt; /dev/block/mmcblk0p33</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 tz -&gt; /dev/block/mmcblk0p5</span><br><span class="line">lrwxrwxrwx 1 root root 20 1970-01-13 18:59 tzbak -&gt; /dev/block/mmcblk0p6</span><br><span class="line">lrwxrwxrwx 1 root root 21 1970-01-13 18:59 userdata -&gt; /dev/block/mmcblk0p35</span><br></pre></td></tr></table></figure>
+
+<p>综合以上，用awk套娃一个自动化脚本</p>
+<p>安卓设备默认是不带awk的，所以需要通过电脑套娃</p>
+<p>这里以wsl运行环境为例，如果不是wsl自行更改 <code>call_cat</code> 和 <code>call_ls</code> 两个变量即可</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="meta">#!/bin/bash</span></span><br><span class="line">call_cat=<span class="string">&quot;adb.exe shell cat&quot;</span> <span class="comment"># cat命令</span></span><br><span class="line">call_ls=<span class="string">&quot;adb.exe shell ls&quot;</span> <span class="comment"># ls命令</span></span><br><span class="line">name_base=<span class="string">&quot;/dev/block/bootdevice&quot;</span> <span class="comment"># by-name的上级目录，一般不用动</span></span><br><span class="line"><span class="keyword">if</span> [[ -n <span class="variable">$1</span> ]]; <span class="keyword">then</span></span><br><span class="line">  block_name=$(<span class="variable">$&#123;call_ls&#125;</span> -la <span class="variable">$&#123;name_base&#125;</span>/by-name/<span class="variable">$1</span> 2&gt;/dev/null | awk -F <span class="string">&quot; -&gt; /dev/block/&quot;</span> <span class="string">&#x27;&#123;print $2&#125;&#x27;</span>) <span class="comment"># 将 分区可读名称 转换为 块设备名称</span></span><br><span class="line">  <span class="keyword">if</span> [[ -n <span class="variable">$&#123;block_name&#125;</span> ]]; <span class="keyword">then</span></span><br><span class="line">    <span class="variable">$&#123;call_cat&#125;</span> /proc/partitions | grep <span class="variable">$&#123;block_name&#125;</span> | awk -F <span class="string">&quot; &quot;</span> <span class="string">&#x27;&#123;print $3 * 1024&#125;&#x27;</span> <span class="comment"># 输出单位为 Byte</span></span><br><span class="line">  <span class="keyword">else</span></span><br><span class="line">    <span class="built_in">echo</span> <span class="string">&quot;Error: partition <span class="variable">$1</span> not found&quot;</span></span><br><span class="line">  <span class="keyword">fi</span></span><br><span class="line"><span class="keyword">else</span></span><br><span class="line">  <span class="built_in">echo</span> <span class="string">&quot;Usage: <span class="variable">$0</span> [partition name]&quot;</span></span><br><span class="line"><span class="keyword">fi</span></span><br></pre></td></tr></table></figure>
+
+<p>运行测试</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mlgmxyysd@MlgmXyysd-NUC:~$ ./partitions.sh</span><br><span class="line">Usage: ./partitions.sh [partition name]</span><br><span class="line">mlgmxyysd@MlgmXyysd-NUC:~$ ./partitions.sh non_exist_partition</span><br><span class="line">Error: partition non_exist_partition not found</span><br><span class="line">mlgmxyysd@MlgmXyysd-NUC:~$ ./partitions.sh system</span><br><span class="line">1073741824</span><br></pre></td></tr></table></figure>
+
+<p>与上方输出计算结果一致，成功</p>
+<p>更新：上面的方式在一些设备中可能会被SELinux挡掉</p>
+<p>其实还有一种更简单的方式</p>
+<p>重启设备至 <code>fastboot</code> 或 <code>bootloader</code> 模式</p>
+<figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">fastboot getvar partition-size:[partition name]</span><br><span class="line"></span><br><span class="line"><span class="comment"># 例如：</span></span><br><span class="line">mlgmxyysd@MlgmXyysd-NUC:~$ fastboot.exe getvar partition-size:system</span><br><span class="line">partition-size:system:   0x40000000</span><br><span class="line">Finished. Total time: 0.116s</span><br></pre></td></tr></table></figure>
+
+<p>返回值转换为 DEC 为 1073741824 ，单位为 Byte</p>
+<p>感谢：<a href="https://blog.779.moe/archives/7/">TH779</a></p>
+]]></content>
+      <categories>
+        <category>Android</category>
+      </categories>
+      <tags>
+        <tag>分区</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>HelloBlog</title>
+    <url>/2022/02/23/helloblog/</url>
+    <content><![CDATA[<h3 id="博客主题地址"><a href="#博客主题地址" class="headerlink" title="博客主题地址:"></a>博客主题地址:</h3><p><a href="https://github.com/fluid-dev/hexo-theme-fluid">Fluid</a><br><a href="https://github.com/Fechin/hexo-theme-diaspora/">diaspora</a></p>
+<h3 id="文档"><a href="#文档" class="headerlink" title="文档:"></a>文档:</h3><p><a href="https://hexo.fluid-dev.com/docs/">Fluid Docs</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>ubuntu 配置 mysql 8.0.x 踩坑记录</title>
+    <url>/2023/04/15/ubuntu-%E9%85%8D%E7%BD%AE-mysql-8-0-x-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>因为最近有一些原因打算把MySQL数据库迁移到Ubuntu服务器中结果各种坑，为此记录一下方便日后开发</p>
+<h3 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install mysql-server</span><br></pre></td></tr></table></figure>
+
+<h3 id="MySQL服务管理命令"><a href="#MySQL服务管理命令" class="headerlink" title="MySQL服务管理命令"></a>MySQL服务管理命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service mysql status <span class="comment"># 查看服务状态</span></span><br><span class="line">sudo service mysql start <span class="comment"># 启动服务</span></span><br><span class="line">sudo service mysql stop <span class="comment"># 停止服务</span></span><br><span class="line">sudo service mysql restart <span class="comment"># 重启服务</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt purge mysql*</span><br><span class="line">sudo <span class="built_in">rm</span> -rf /etc/mysql/ /var/lib/mysql</span><br></pre></td></tr></table></figure>
+
+<h3 id="忘记账号密码"><a href="#忘记账号密码" class="headerlink" title="忘记账号密码"></a>忘记账号密码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在[mysqld]段下加入 skip-grant-tables</span></span><br><span class="line">sudo service mysql restart</span><br><span class="line"><span class="comment"># 然后输入 mysql登录</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="查询-user表-查看所有的-user-信息"><a href="#查询-user表-查看所有的-user-信息" class="headerlink" title="查询 user表 查看所有的 user 信息"></a>查询 user表 查看所有的 user 信息</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">user</span>,authentication_string,plugin,host <span class="keyword">from</span> mysql.user;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询以开放的端口号"><a href="#查询以开放的端口号" class="headerlink" title="查询以开放的端口号"></a>查询以开放的端口号</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> variables <span class="keyword">like</span> <span class="string">&#x27;port&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改账户密码"><a href="#修改账户密码" class="headerlink" title="修改账户密码"></a>修改账户密码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果忘记了账户密码 需要在mysqld.cnf配置文件的 [mysqld] 段下加 skip-grant-tables</span></span><br><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在[mysqld]段下加入 skip-grant-tables</span></span><br><span class="line"><span class="comment"># 然后重启MySQL服务后输入 mysql 即可免密登录</span></span><br><span class="line"><span class="comment"># 不能直接修改密码，会报错。要先清空root密码：</span></span><br><span class="line">update user <span class="built_in">set</span> authentication_string=<span class="string">&#x27;&#x27;</span> <span class="built_in">where</span> user=<span class="string">&#x27;root&#x27;</span>;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<h3 id="开始操作"><a href="#开始操作" class="headerlink" title="开始操作"></a>开始操作</h3><h3 id="登录自带的临时账号"><a href="#登录自带的临时账号" class="headerlink" title="登录自带的临时账号"></a>登录自带的临时账号</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo <span class="built_in">cat</span> /etc/mysql/debian.cnf</span><br><span class="line">mysql -u debian-sys-maint -p</span><br></pre></td></tr></table></figure>
+
+<h3 id="新建一个root账户来日用"><a href="#新建一个root账户来日用" class="headerlink" title="新建一个root账户来日用"></a>新建一个root账户来日用</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- &quot;%&quot;表示允许任何方式连接该账户</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;123456&#x27;</span>; #密码<span class="number">123456</span></span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
+
+<h3 id="重新登录root账户"><a href="#重新登录root账户" class="headerlink" title="重新登录root账户"></a>重新登录root账户</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
+
+<h3 id="授权所有IP允许远程连接root账户并具有修改权限"><a href="#授权所有IP允许远程连接root账户并具有修改权限" class="headerlink" title="授权所有IP允许远程连接root账户并具有修改权限"></a>授权所有IP允许远程连接root账户并具有修改权限</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> OPTION;</span><br><span class="line">FLUSH PRIVILEGES;</span><br><span class="line"><span class="comment">-- 重新登录root账号</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="取消绑定本地登录"><a href="#取消绑定本地登录" class="headerlink" title="取消绑定本地登录"></a>取消绑定本地登录</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment">#注释掉bind-address</span></span><br><span class="line">bind-address           = 127.0.0.1</span><br></pre></td></tr></table></figure>
+
+<h3 id="编辑策略开放服务器远程3306端口-tcp协议"><a href="#编辑策略开放服务器远程3306端口-tcp协议" class="headerlink" title="编辑策略开放服务器远程3306端口(tcp协议)"></a>编辑策略开放服务器远程3306端口(tcp协议)</h3><h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="https://www.cnblogs.com/RioTian/p/16066917.html">Ubuntu20.04上安装MySQL8.0（绝对保证能够正常使用）</a><br><a href="https://blog.csdn.net/akumalzw/article/details/127363667">Ubuntu 搭建 MYSQL数据库</a><br><a href="https://blog.csdn.net/qq_44866828/article/details/120005103">MySQL 8 如何修改密码</a></p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>mysql填坑</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>给hexo博客添加live2d小人</title>
+    <url>/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/</url>
+    <content><![CDATA[<h3 id="给hexo博客添加Live2d小人"><a href="#给hexo博客添加Live2d小人" class="headerlink" title="给hexo博客添加Live2d小人"></a>给hexo博客添加Live2d小人</h3><p>我们在观看别人的博客的时候有时就会发现他们的博客里面有个很可爱的小人，那么如何在自己的hexo博客中添加小人呢?<br>有两种方法：</p>
+<p><b> 1. 安装 <code>hexo-helper-live2d</code> 模块</b></p>
+<p>安装模块</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo npm install --save hexo-helper-live2d</span><br></pre></td></tr></table></figure>
+
+<p>然后再博客根目录的 <code>_config.yml</code> 添加如下配置</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line"># live2d</span><br><span class="line">live2d:</span><br><span class="line">  enable: true  # 是否启动</span><br><span class="line">  scriptFrom: local # 默认</span><br><span class="line">  pluginRootPath: live2dw/  # 插件在站点上的根目录(相对路径)</span><br><span class="line">  pluginJsPath: lib/  # 脚本文件相对与插件根目录路径</span><br><span class="line">  pluginModelPath: assets/  # 模型文件相对与插件根目录路径</span><br><span class="line">  tagMode: false  # 标签模式, 是否仅替换 live2d tag标签而非插入到所有页面中</span><br><span class="line">  debug: false  # 调试, 是否在控制台输出日志</span><br><span class="line">  model:</span><br><span class="line">    use: nepmaid  ## 模型文件</span><br><span class="line">  display:</span><br><span class="line">    position: right # 定位方向 left right top bottom</span><br><span class="line">    width: 150  # 小人宽度</span><br><span class="line">    height: 300 #  小人高度</span><br><span class="line">    hOffset: -15  # 向 偏移</span><br><span class="line">    vOffset: -15  # 像 偏移</span><br><span class="line">  mobile:</span><br><span class="line">    show: false  # 手机端是否显示</span><br><span class="line">  react:</span><br><span class="line">    opacity: 0.7  # 模型透明度</span><br></pre></td></tr></table></figure>
+<p><b> 注意缩进，否则配置无效 </b><br>然后 下载好 live2d 模型</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">git clone https://github.com/summerscar/live2dDemo</span><br></pre></td></tr></table></figure>
+
+<p>接下来在博客根目录新建一个 <code>live2d_models</code> 目录<br>在 <code>live2dDemo/assets/</code> 目录里找到你需要的模型目录 并把他们整个复制到 <code>live2d_models</code> 目录中</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">规则：live2d_models/&lt;模块名&gt;</span><br><span class="line"></span><br><span class="line">比如: live2d_models/nepmaid</span><br></pre></td></tr></table></figure>
+
+<p><b> 有些模型的配置文件命名可能不规范需要自行修改文件名 </b><br><b> 打开模块文件夹 找到 <code>mode.json</code> 或者其他 改名为 &lt;模块名&gt;.mode.json </b></p>
+<p>最后修改 <code>_config.yml</code> 里面刚刚添加的 live2d 配置条目里面的:</p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">model:</span><br><span class="line">  use: nepmaid  ## 模型文件</span><br></pre></td></tr></table></figure>
+
+<p><b> 大功告成 最后输入 </b></p>
+<figure class="highlight plaintext"><table><tr><td class="code"><pre><span class="line">hexo clean</span><br><span class="line">hexo generate</span><br><span class="line">hexo server</span><br></pre></td></tr></table></figure>
+<p>然后清除一下浏览器缓存，打开后就可以发现我们添加的小人已经在你的博客里面看着你了</p>
+<p><b> 2.使用 <code>live2d-widget</code> 项目</b><br>github 地址: <a href="https://github.com/stevenjoezhang/live2d-widget">https://github.com/stevenjoezhang/live2d-widget</a><br><b> 这个比较复杂 需要一定的代码基础 </b></p>
+<p>如果你是小白，或者只需要最基础的功能，那么只用将这一行代码加入到你主题文件夹里面的布局文件 找到带有 <code>head</code> 或 <code>body</code> 标签的布局文件中 </p>
+<figure class="highlight html"><table><tr><td class="code"><pre><span class="line"><span class="tag">&lt;<span class="name">script</span> <span class="attr">src</span>=<span class="string">&quot;https://fastly.jsdelivr.net/gh/stevenjoezhang/live2d-widget@latest/autoload.js&quot;</span>&gt;</span><span class="tag">&lt;/<span class="name">script</span>&gt;</span></span><br></pre></td></tr></table></figure>
+<p>更多请参考官方文档 <a href="https://github.com/stevenjoezhang/live2d-widget/blob/master/README.md">https://github.com/stevenjoezhang/live2d-widget/blob/master/README.md</a><br>或者 <a href="https://www.bilibili.com/read/cv18133283/">https://www.bilibili.com/read/cv18133283/</a></p>
+<h3 id="效果演示"><a href="#效果演示" class="headerlink" title="效果演示"></a>效果演示</h3><p><code>hexo-helper-live2d</code><br><img src="/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/1.png"></p>
+<p><code>live2d-widget</code><br><img src="/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/2.png"></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>hexo diaspora 主题 gitalk 插件踩坑记录</title>
+    <url>/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<h3 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h3><p>配置好github账号<br><code>npm i --save gitalk</code> # 安装插件<br>github 创建一个用于存放评论的空仓库备用，需要启用issue功能<br>然后需要创建 <code>GitHub Application</code> 如果没有 <a href="https://github.com/settings/applications/new">点击这里申请</a>,<br><code>Authorization callback URL</code> 填写GithubPages的域名 <code>https://xxx.github.io</code> 有专属域名的填专属域名，否则会跳转到主界面无法登陆<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/1.png"></p>
+<p>记录好Client ID  Client secrets 等会要用<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/2.png"></p>
+<p>配置themes&#x2F;_config.yml (巨坑 因为资料比较乱挨个测试，将近卡了一天)</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="string">插件默认配置:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">    <span class="comment"># 是否启用评论功能</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># 是否自动展开评论框</span></span><br><span class="line">    <span class="attr">autoExpand:</span> <span class="literal">false</span></span><br><span class="line">    <span class="comment"># 应用编号</span></span><br><span class="line">    <span class="attr">clientID:</span> <span class="string">&#x27;7e2a5d7410f4fd6a167c&#x27;</span></span><br><span class="line">    <span class="comment"># 应用秘钥</span></span><br><span class="line">    <span class="attr">clientSecret:</span> <span class="string">&#x27;9de6847c58b787e15f1148ec4e844b3690bb8e31&#x27;</span></span><br><span class="line">    <span class="comment"># issue仓库名</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">&#x27; blog-comments&#x27;</span></span><br><span class="line">    <span class="comment"># Github名</span></span><br><span class="line">    <span class="attr">owner:</span> <span class="string">&#x27;xiaoxindada&#x27;</span></span><br><span class="line">    <span class="comment"># Github名</span></span><br><span class="line">    <span class="attr">admin:</span> [<span class="string">&#x27;xiaoxindada&#x27;</span>]</span><br><span class="line">    <span class="comment"># Ensure uniqueness and length less than 50</span></span><br><span class="line">    <span class="attr">id:</span> <span class="string">location.pathname</span></span><br><span class="line">    <span class="comment"># Facebook-like distraction free mode</span></span><br><span class="line">    <span class="attr">distractionFreeMode:</span> <span class="literal">true</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h3><p> <code>Error: Not Found.</code></p>
+<p><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/3.png"><br>通过查资料得知是_config.yml配置问题<br>但是检查了无数遍发现并没有配置填错<br>然后直到遇到<a href="https://blog.csdn.net/qing_gee/article/details/100133060">这篇文章</a>的配置</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">    <span class="attr">owner:</span> <span class="string">qinggee</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">blog-comments</span></span><br><span class="line">    <span class="attr">clientID:</span> <span class="string">11a6f252f6224761</span></span><br><span class="line">    <span class="attr">clientSecret:</span> <span class="string">3d1722301d3ecfc3828d137c9ea50c00a7</span></span><br><span class="line">    <span class="comment"># 参数需要改成你自己的</span></span><br></pre></td></tr></table></figure>
+
+<p>替换默认的配置后奇迹般的能用了<br>然后遇到了 <code>未找到相关的Issues进行评论</code></p>
+<p>通过查资料得知是issues仓库没有初始化需要如下所示:<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/4.png"><br>先初始化一下就好了，但是手动初始化实属浪费时间且容易出错<br>于是遇到了相关配置 <a href="https://iochen.com/post/use-gitalk-in-hexo/">参考文章</a></p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">perPage:</span> <span class="number">15</span> <span class="comment">#每页多少个评论</span></span><br><span class="line"><span class="attr">pagerDirection:</span> <span class="string">last</span> <span class="comment">#排序方式是从旧到新（first）还是从新到旧（last）</span></span><br><span class="line"><span class="attr">createIssueManually:</span> <span class="literal">true</span> <span class="comment">#如果当前页面没有相应的 isssue ，且登录的用户属于 admin，则会自动创建 issue。如果设置为 true，则显示一个初始化页面，创建 issue 需要点击 init 按钮。</span></span><br><span class="line"><span class="attr">distractionFreeMode:</span> <span class="literal">false</span> <span class="comment">#是否启用快捷键(cmd|ctrl + enter) 提交评论.</span></span><br></pre></td></tr></table></figure>
+
+<p>添加上理论是没有问题的但是还是没用<br>然后通过仔细查看文章还有一个管理员用户登陆配置项</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">adminUser:</span> <span class="string">&quot;[&#x27;iosite&#x27;]&quot;</span> <span class="comment">#管理员用户，下文也会详细讲</span></span><br></pre></td></tr></table></figure>
+
+<p>这个有点映像然后在<a href="https://github.com/gitalk/gitalk">官方文档</a>中发现了此配置的修改</p>
+<p>官方解释:</p>
+<p>admin <code>Array</code></p>
+<p>必须. GitHub repository 的所有者和合作者 (对这个 repository 有写权限的用户)。</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">admin:</span> [<span class="string">&#x27;xiaoxindada&#x27;</span>]  <span class="comment"># 管理员用户登陆</span></span><br><span class="line"><span class="attr">createIssueManually:</span> <span class="literal">true</span> <span class="comment"># 如果 issue 仓库没有当前页面的 issue 且登陆的用户为管理员，则显示一个初始化按钮创建</span></span><br></pre></td></tr></table></figure>
+
+<p>加上以后完美解决<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/5.png"></p>
+<h3 id="完整的配置"><a href="#完整的配置" class="headerlink" title="完整的配置"></a>完整的配置</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span> <span class="comment"># 是否启用评论功能</span></span><br><span class="line">  <span class="attr">autoExpand:</span> <span class="literal">false</span> <span class="comment"># 是否自动展开评论框</span></span><br><span class="line">  <span class="attr">owner:</span> <span class="string">xiaoxindada</span> <span class="comment"># 仓库所有者</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">blog-comments</span> <span class="comment"># issue仓库名</span></span><br><span class="line">  <span class="attr">clientID:</span> <span class="string">7e2a5d7410f4fd6a167c</span> <span class="comment"># 应用编号</span></span><br><span class="line">  <span class="attr">clientSecret:</span> <span class="string">9de6847c58b787e15f1148ec4e844b3690bb8e31</span> <span class="comment"># 应用秘钥</span></span><br><span class="line">  <span class="attr">perPage:</span> <span class="number">15</span> <span class="comment"># 每页多少个评论</span></span><br><span class="line">  <span class="attr">pagerDirection:</span> <span class="string">last</span> <span class="comment"># 排序方式是从旧到新（first）还是从新到旧（last）</span></span><br><span class="line">  <span class="attr">admin:</span> [<span class="string">&#x27;xiaoxindada&#x27;</span>]  <span class="comment"># 管理员用户登陆</span></span><br><span class="line">  <span class="attr">createIssueManually:</span> <span class="literal">true</span> <span class="comment"># 如果 issue 仓库没有当前页面的 issue 且登陆的用户为管理员，则显示一个初始化按钮创建issue 需要点击 init 按钮。</span></span><br><span class="line">  <span class="attr">distractionFreeMode:</span> <span class="literal">false</span> <span class="comment"># 是否启用快捷键(cmd|ctrl + enter) 提交评论.</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="效果预览"><a href="#效果预览" class="headerlink" title="效果预览"></a>效果预览</h3><p><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/6.png"></p>
+<p><b>最后使用 hexo deploy 部署到github</b><br><b>至此踩坑结束， 感觉真的很糟糕</b></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客搭建填坑</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>随机图片api接口网站</title>
+    <url>/2023/12/21/%E9%9A%8F%E6%9C%BA%E5%9B%BE%E7%89%87api%E6%8E%A5%E5%8F%A3%E7%BD%91%E7%AB%99/</url>
+    <content><![CDATA[<h2 id="自用随机图api"><a href="#自用随机图api" class="headerlink" title="自用随机图api"></a>自用随机图api</h2><p><a href="https://imgapi.cn/wiki.html">imgapi</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+</search>
