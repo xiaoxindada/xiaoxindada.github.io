@@ -50,6 +50,43 @@
       </tags>
   </entry>
   <entry>
+    <title>ubuntu 配置 mysql 8.0.x 踩坑记录</title>
+    <url>/2023/04/15/ubuntu-%E9%85%8D%E7%BD%AE-mysql-8-0-x-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>因为最近有一些原因打算把MySQL数据库迁移到Ubuntu服务器中结果各种坑，为此记录一下方便日后开发</p>
+<h3 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install mysql-server</span><br></pre></td></tr></table></figure>
+
+<h3 id="MySQL服务管理命令"><a href="#MySQL服务管理命令" class="headerlink" title="MySQL服务管理命令"></a>MySQL服务管理命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service mysql status <span class="comment"># 查看服务状态</span></span><br><span class="line">sudo service mysql start <span class="comment"># 启动服务</span></span><br><span class="line">sudo service mysql stop <span class="comment"># 停止服务</span></span><br><span class="line">sudo service mysql restart <span class="comment"># 重启服务</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt purge mysql*</span><br><span class="line">sudo <span class="built_in">rm</span> -rf /etc/mysql/ /var/lib/mysql</span><br></pre></td></tr></table></figure>
+
+<h3 id="忘记账号密码"><a href="#忘记账号密码" class="headerlink" title="忘记账号密码"></a>忘记账号密码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在[mysqld]段下加入 skip-grant-tables</span></span><br><span class="line">sudo service mysql restart</span><br><span class="line"><span class="comment"># 然后输入 mysql登录</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="查询-user表-查看所有的-user-信息"><a href="#查询-user表-查看所有的-user-信息" class="headerlink" title="查询 user表 查看所有的 user 信息"></a>查询 user表 查看所有的 user 信息</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">user</span>,authentication_string,plugin,host <span class="keyword">from</span> mysql.user;</span><br></pre></td></tr></table></figure>
+
+<h3 id="查询以开放的端口号"><a href="#查询以开放的端口号" class="headerlink" title="查询以开放的端口号"></a>查询以开放的端口号</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> variables <span class="keyword">like</span> <span class="string">&#x27;port&#x27;</span>;</span><br></pre></td></tr></table></figure>
+
+<h3 id="修改账户密码"><a href="#修改账户密码" class="headerlink" title="修改账户密码"></a>修改账户密码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果忘记了账户密码 需要在mysqld.cnf配置文件的 [mysqld] 段下加 skip-grant-tables</span></span><br><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在[mysqld]段下加入 skip-grant-tables</span></span><br><span class="line"><span class="comment"># 然后重启MySQL服务后输入 mysql 即可免密登录</span></span><br><span class="line"><span class="comment"># 不能直接修改密码，会报错。要先清空root密码：</span></span><br><span class="line">update user <span class="built_in">set</span> authentication_string=<span class="string">&#x27;&#x27;</span> <span class="built_in">where</span> user=<span class="string">&#x27;root&#x27;</span>;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
+
+<h3 id="开始操作"><a href="#开始操作" class="headerlink" title="开始操作"></a>开始操作</h3><h3 id="登录自带的临时账号"><a href="#登录自带的临时账号" class="headerlink" title="登录自带的临时账号"></a>登录自带的临时账号</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo <span class="built_in">cat</span> /etc/mysql/debian.cnf</span><br><span class="line">mysql -u debian-sys-maint -p</span><br></pre></td></tr></table></figure>
+
+<h3 id="新建一个root账户来日用"><a href="#新建一个root账户来日用" class="headerlink" title="新建一个root账户来日用"></a>新建一个root账户来日用</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- &quot;%&quot;表示允许任何方式连接该账户</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;123456&#x27;</span>; #密码<span class="number">123456</span></span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
+
+<h3 id="重新登录root账户"><a href="#重新登录root账户" class="headerlink" title="重新登录root账户"></a>重新登录root账户</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
+
+<h3 id="授权所有IP允许远程连接root账户并具有修改权限"><a href="#授权所有IP允许远程连接root账户并具有修改权限" class="headerlink" title="授权所有IP允许远程连接root账户并具有修改权限"></a>授权所有IP允许远程连接root账户并具有修改权限</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> OPTION;</span><br><span class="line">FLUSH PRIVILEGES;</span><br><span class="line"><span class="comment">-- 重新登录root账号</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="取消绑定本地登录"><a href="#取消绑定本地登录" class="headerlink" title="取消绑定本地登录"></a>取消绑定本地登录</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment">#注释掉bind-address</span></span><br><span class="line">bind-address           = 127.0.0.1</span><br></pre></td></tr></table></figure>
+
+<h3 id="编辑策略开放服务器远程3306端口-tcp协议"><a href="#编辑策略开放服务器远程3306端口-tcp协议" class="headerlink" title="编辑策略开放服务器远程3306端口(tcp协议)"></a>编辑策略开放服务器远程3306端口(tcp协议)</h3><h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="https://www.cnblogs.com/RioTian/p/16066917.html">Ubuntu20.04上安装MySQL8.0（绝对保证能够正常使用）</a><br><a href="https://blog.csdn.net/akumalzw/article/details/127363667">Ubuntu 搭建 MYSQL数据库</a><br><a href="https://blog.csdn.net/qq_44866828/article/details/120005103">MySQL 8 如何修改密码</a></p>
+]]></content>
+      <categories>
+        <category>数据库</category>
+      </categories>
+      <tags>
+        <tag>mysql填坑</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>hexo diaspora 主题 gitalk 插件踩坑记录</title>
     <url>/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
     <content><![CDATA[<h3 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h3><p>配置好github账号<br><code>npm i --save gitalk</code> # 安装插件<br>github 创建一个用于存放评论的空仓库备用，需要启用issue功能<br>然后需要创建 <code>GitHub Application</code> 如果没有 <a href="https://github.com/settings/applications/new">点击这里申请</a>,<br><code>Authorization callback URL</code> 填写GithubPages的域名 <code>https://xxx.github.io</code> 有专属域名的填专属域名，否则会跳转到主界面无法登陆<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/1.png"></p>
@@ -134,43 +171,6 @@
       </categories>
       <tags>
         <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>ubuntu 配置 mysql 8.0.x 踩坑记录</title>
-    <url>/2023/04/15/ubuntu-%E9%85%8D%E7%BD%AE-mysql-8-0-x-%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<h3 id="前言"><a href="#前言" class="headerlink" title="前言"></a>前言</h3><p>因为最近有一些原因打算把MySQL数据库迁移到Ubuntu服务器中结果各种坑，为此记录一下方便日后开发</p>
-<h3 id="安装MySQL"><a href="#安装MySQL" class="headerlink" title="安装MySQL"></a>安装MySQL</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt-get install mysql-server</span><br></pre></td></tr></table></figure>
-
-<h3 id="MySQL服务管理命令"><a href="#MySQL服务管理命令" class="headerlink" title="MySQL服务管理命令"></a>MySQL服务管理命令</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo service mysql status <span class="comment"># 查看服务状态</span></span><br><span class="line">sudo service mysql start <span class="comment"># 启动服务</span></span><br><span class="line">sudo service mysql stop <span class="comment"># 停止服务</span></span><br><span class="line">sudo service mysql restart <span class="comment"># 重启服务</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="卸载MySQL"><a href="#卸载MySQL" class="headerlink" title="卸载MySQL"></a>卸载MySQL</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo apt purge mysql*</span><br><span class="line">sudo <span class="built_in">rm</span> -rf /etc/mysql/ /var/lib/mysql</span><br></pre></td></tr></table></figure>
-
-<h3 id="忘记账号密码"><a href="#忘记账号密码" class="headerlink" title="忘记账号密码"></a>忘记账号密码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在[mysqld]段下加入 skip-grant-tables</span></span><br><span class="line">sudo service mysql restart</span><br><span class="line"><span class="comment"># 然后输入 mysql登录</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="查询-user表-查看所有的-user-信息"><a href="#查询-user表-查看所有的-user-信息" class="headerlink" title="查询 user表 查看所有的 user 信息"></a>查询 user表 查看所有的 user 信息</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">select</span> <span class="keyword">user</span>,authentication_string,plugin,host <span class="keyword">from</span> mysql.user;</span><br></pre></td></tr></table></figure>
-
-<h3 id="查询以开放的端口号"><a href="#查询以开放的端口号" class="headerlink" title="查询以开放的端口号"></a>查询以开放的端口号</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">show</span> <span class="keyword">global</span> variables <span class="keyword">like</span> <span class="string">&#x27;port&#x27;</span>;</span><br></pre></td></tr></table></figure>
-
-<h3 id="修改账户密码"><a href="#修改账户密码" class="headerlink" title="修改账户密码"></a>修改账户密码</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line"><span class="comment"># 如果忘记了账户密码 需要在mysqld.cnf配置文件的 [mysqld] 段下加 skip-grant-tables</span></span><br><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment"># 在[mysqld]段下加入 skip-grant-tables</span></span><br><span class="line"><span class="comment"># 然后重启MySQL服务后输入 mysql 即可免密登录</span></span><br><span class="line"><span class="comment"># 不能直接修改密码，会报错。要先清空root密码：</span></span><br><span class="line">update user <span class="built_in">set</span> authentication_string=<span class="string">&#x27;&#x27;</span> <span class="built_in">where</span> user=<span class="string">&#x27;root&#x27;</span>;</span><br><span class="line">flush privileges;</span><br></pre></td></tr></table></figure>
-
-<h3 id="开始操作"><a href="#开始操作" class="headerlink" title="开始操作"></a>开始操作</h3><h3 id="登录自带的临时账号"><a href="#登录自带的临时账号" class="headerlink" title="登录自带的临时账号"></a>登录自带的临时账号</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo <span class="built_in">cat</span> /etc/mysql/debian.cnf</span><br><span class="line">mysql -u debian-sys-maint -p</span><br></pre></td></tr></table></figure>
-
-<h3 id="新建一个root账户来日用"><a href="#新建一个root账户来日用" class="headerlink" title="新建一个root账户来日用"></a>新建一个root账户来日用</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="comment">-- &quot;%&quot;表示允许任何方式连接该账户</span></span><br><span class="line"><span class="keyword">create</span> <span class="keyword">user</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> identified <span class="keyword">by</span> <span class="string">&#x27;123456&#x27;</span>; #密码<span class="number">123456</span></span><br><span class="line">FLUSH PRIVILEGES;</span><br></pre></td></tr></table></figure>
-
-<h3 id="重新登录root账户"><a href="#重新登录root账户" class="headerlink" title="重新登录root账户"></a>重新登录root账户</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">mysql -u root -p</span><br></pre></td></tr></table></figure>
-
-<h3 id="授权所有IP允许远程连接root账户并具有修改权限"><a href="#授权所有IP允许远程连接root账户并具有修改权限" class="headerlink" title="授权所有IP允许远程连接root账户并具有修改权限"></a>授权所有IP允许远程连接root账户并具有修改权限</h3><figure class="highlight sql"><table><tr><td class="code"><pre><span class="line"><span class="keyword">GRANT</span> <span class="keyword">ALL</span> PRIVILEGES <span class="keyword">ON</span> <span class="operator">*</span>.<span class="operator">*</span> <span class="keyword">TO</span> <span class="string">&#x27;root&#x27;</span>@<span class="string">&#x27;%&#x27;</span> <span class="keyword">WITH</span> <span class="keyword">GRANT</span> OPTION;</span><br><span class="line">FLUSH PRIVILEGES;</span><br><span class="line"><span class="comment">-- 重新登录root账号</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="取消绑定本地登录"><a href="#取消绑定本地登录" class="headerlink" title="取消绑定本地登录"></a>取消绑定本地登录</h3><figure class="highlight bash"><table><tr><td class="code"><pre><span class="line">sudo nano /etc/mysql/mysql.conf.d/mysqld.cnf</span><br><span class="line"><span class="comment">#注释掉bind-address</span></span><br><span class="line">bind-address           = 127.0.0.1</span><br></pre></td></tr></table></figure>
-
-<h3 id="编辑策略开放服务器远程3306端口-tcp协议"><a href="#编辑策略开放服务器远程3306端口-tcp协议" class="headerlink" title="编辑策略开放服务器远程3306端口(tcp协议)"></a>编辑策略开放服务器远程3306端口(tcp协议)</h3><h3 id="参考文章"><a href="#参考文章" class="headerlink" title="参考文章"></a>参考文章</h3><p><a href="https://www.cnblogs.com/RioTian/p/16066917.html">Ubuntu20.04上安装MySQL8.0（绝对保证能够正常使用）</a><br><a href="https://blog.csdn.net/akumalzw/article/details/127363667">Ubuntu 搭建 MYSQL数据库</a><br><a href="https://blog.csdn.net/qq_44866828/article/details/120005103">MySQL 8 如何修改密码</a></p>
-]]></content>
-      <categories>
-        <category>数据库</category>
-      </categories>
-      <tags>
-        <tag>mysql填坑</tag>
       </tags>
   </entry>
 </search>
