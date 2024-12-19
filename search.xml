@@ -37,6 +37,19 @@
       </tags>
   </entry>
   <entry>
+    <title>HelloBlog</title>
+    <url>/2022/02/23/helloblog/</url>
+    <content><![CDATA[<h3 id="博客主题地址"><a href="#博客主题地址" class="headerlink" title="博客主题地址:"></a>博客主题地址:</h3><p><a href="https://github.com/fluid-dev/hexo-theme-fluid">Fluid</a><br><a href="https://github.com/Fechin/hexo-theme-diaspora/">diaspora</a></p>
+<h3 id="文档"><a href="#文档" class="headerlink" title="文档:"></a>文档:</h3><p><a href="https://hexo.fluid-dev.com/docs/">Fluid Docs</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>hexo diaspora 主题 gitalk 插件踩坑记录</title>
     <url>/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
     <content><![CDATA[<h3 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h3><p>配置好github账号<br><code>npm i --save gitalk</code> # 安装插件<br>github 创建一个用于存放评论的空仓库备用，需要启用issue功能<br>然后需要创建 <code>GitHub Application</code> 如果没有 <a href="https://github.com/settings/applications/new">点击这里申请</a>,<br><code>Authorization callback URL</code> 填写GithubPages的域名 <code>https://xxx.github.io</code> 有专属域名的填专属域名，否则会跳转到主界面无法登陆<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/1.png"></p>
@@ -72,19 +85,6 @@
       </categories>
       <tags>
         <tag>博客搭建填坑</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HelloBlog</title>
-    <url>/2022/02/23/helloblog/</url>
-    <content><![CDATA[<h3 id="博客主题地址"><a href="#博客主题地址" class="headerlink" title="博客主题地址:"></a>博客主题地址:</h3><p><a href="https://github.com/fluid-dev/hexo-theme-fluid">Fluid</a><br><a href="https://github.com/Fechin/hexo-theme-diaspora/">diaspora</a></p>
-<h3 id="文档"><a href="#文档" class="headerlink" title="文档:"></a>文档:</h3><p><a href="https://hexo.fluid-dev.com/docs/">Fluid Docs</a></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
       </tags>
   </entry>
   <entry>
