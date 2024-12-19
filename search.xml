@@ -1,6 +1,44 @@
 <?xml version="1.0" encoding="utf-8"?>
 <search>
   <entry>
+    <title>hexo diaspora 主题 gitalk 插件踩坑记录</title>
+    <url>/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
+    <content><![CDATA[<h3 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h3><p>配置好github账号<br><code>npm i --save gitalk</code> # 安装插件<br>github 创建一个用于存放评论的空仓库备用，需要启用issue功能<br>然后需要创建 <code>GitHub Application</code> 如果没有 <a href="https://github.com/settings/applications/new">点击这里申请</a>,<br><code>Authorization callback URL</code> 填写GithubPages的域名 <code>https://xxx.github.io</code> 有专属域名的填专属域名，否则会跳转到主界面无法登陆<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/1.png"></p>
+<p>记录好Client ID  Client secrets 等会要用<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/2.png"></p>
+<p>配置themes&#x2F;_config.yml (巨坑 因为资料比较乱挨个测试，将近卡了一天)</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="string">插件默认配置:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">    <span class="comment"># 是否启用评论功能</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># 是否自动展开评论框</span></span><br><span class="line">    <span class="attr">autoExpand:</span> <span class="literal">false</span></span><br><span class="line">    <span class="comment"># 应用编号</span></span><br><span class="line">    <span class="attr">clientID:</span> <span class="string">&#x27;7e2a5d7410f4fd6a167c&#x27;</span></span><br><span class="line">    <span class="comment"># 应用秘钥</span></span><br><span class="line">    <span class="attr">clientSecret:</span> <span class="string">&#x27;9de6847c58b787e15f1148ec4e844b3690bb8e31&#x27;</span></span><br><span class="line">    <span class="comment"># issue仓库名</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">&#x27; blog-comments&#x27;</span></span><br><span class="line">    <span class="comment"># Github名</span></span><br><span class="line">    <span class="attr">owner:</span> <span class="string">&#x27;xiaoxindada&#x27;</span></span><br><span class="line">    <span class="comment"># Github名</span></span><br><span class="line">    <span class="attr">admin:</span> [<span class="string">&#x27;xiaoxindada&#x27;</span>]</span><br><span class="line">    <span class="comment"># Ensure uniqueness and length less than 50</span></span><br><span class="line">    <span class="attr">id:</span> <span class="string">location.pathname</span></span><br><span class="line">    <span class="comment"># Facebook-like distraction free mode</span></span><br><span class="line">    <span class="attr">distractionFreeMode:</span> <span class="literal">true</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
+
+<h3 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h3><p> <code>Error: Not Found.</code></p>
+<p><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/3.png"><br>通过查资料得知是_config.yml配置问题<br>但是检查了无数遍发现并没有配置填错<br>然后直到遇到<a href="https://blog.csdn.net/qing_gee/article/details/100133060">这篇文章</a>的配置</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">    <span class="attr">owner:</span> <span class="string">qinggee</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">blog-comments</span></span><br><span class="line">    <span class="attr">clientID:</span> <span class="string">11a6f252f6224761</span></span><br><span class="line">    <span class="attr">clientSecret:</span> <span class="string">3d1722301d3ecfc3828d137c9ea50c00a7</span></span><br><span class="line">    <span class="comment"># 参数需要改成你自己的</span></span><br></pre></td></tr></table></figure>
+
+<p>替换默认的配置后奇迹般的能用了<br>然后遇到了 <code>未找到相关的Issues进行评论</code></p>
+<p>通过查资料得知是issues仓库没有初始化需要如下所示:<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/4.png"><br>先初始化一下就好了，但是手动初始化实属浪费时间且容易出错<br>于是遇到了相关配置 <a href="https://iochen.com/post/use-gitalk-in-hexo/">参考文章</a></p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">perPage:</span> <span class="number">15</span> <span class="comment">#每页多少个评论</span></span><br><span class="line"><span class="attr">pagerDirection:</span> <span class="string">last</span> <span class="comment">#排序方式是从旧到新（first）还是从新到旧（last）</span></span><br><span class="line"><span class="attr">createIssueManually:</span> <span class="literal">true</span> <span class="comment">#如果当前页面没有相应的 isssue ，且登录的用户属于 admin，则会自动创建 issue。如果设置为 true，则显示一个初始化页面，创建 issue 需要点击 init 按钮。</span></span><br><span class="line"><span class="attr">distractionFreeMode:</span> <span class="literal">false</span> <span class="comment">#是否启用快捷键(cmd|ctrl + enter) 提交评论.</span></span><br></pre></td></tr></table></figure>
+
+<p>添加上理论是没有问题的但是还是没用<br>然后通过仔细查看文章还有一个管理员用户登陆配置项</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">adminUser:</span> <span class="string">&quot;[&#x27;iosite&#x27;]&quot;</span> <span class="comment">#管理员用户，下文也会详细讲</span></span><br></pre></td></tr></table></figure>
+
+<p>这个有点映像然后在<a href="https://github.com/gitalk/gitalk">官方文档</a>中发现了此配置的修改</p>
+<p>官方解释:</p>
+<p>admin <code>Array</code></p>
+<p>必须. GitHub repository 的所有者和合作者 (对这个 repository 有写权限的用户)。</p>
+<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">admin:</span> [<span class="string">&#x27;xiaoxindada&#x27;</span>]  <span class="comment"># 管理员用户登陆</span></span><br><span class="line"><span class="attr">createIssueManually:</span> <span class="literal">true</span> <span class="comment"># 如果 issue 仓库没有当前页面的 issue 且登陆的用户为管理员，则显示一个初始化按钮创建</span></span><br></pre></td></tr></table></figure>
+
+<p>加上以后完美解决<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/5.png"></p>
+<h3 id="完整的配置"><a href="#完整的配置" class="headerlink" title="完整的配置"></a>完整的配置</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span> <span class="comment"># 是否启用评论功能</span></span><br><span class="line">  <span class="attr">autoExpand:</span> <span class="literal">false</span> <span class="comment"># 是否自动展开评论框</span></span><br><span class="line">  <span class="attr">owner:</span> <span class="string">xiaoxindada</span> <span class="comment"># 仓库所有者</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">blog-comments</span> <span class="comment"># issue仓库名</span></span><br><span class="line">  <span class="attr">clientID:</span> <span class="string">7e2a5d7410f4fd6a167c</span> <span class="comment"># 应用编号</span></span><br><span class="line">  <span class="attr">clientSecret:</span> <span class="string">9de6847c58b787e15f1148ec4e844b3690bb8e31</span> <span class="comment"># 应用秘钥</span></span><br><span class="line">  <span class="attr">perPage:</span> <span class="number">15</span> <span class="comment"># 每页多少个评论</span></span><br><span class="line">  <span class="attr">pagerDirection:</span> <span class="string">last</span> <span class="comment"># 排序方式是从旧到新（first）还是从新到旧（last）</span></span><br><span class="line">  <span class="attr">admin:</span> [<span class="string">&#x27;xiaoxindada&#x27;</span>]  <span class="comment"># 管理员用户登陆</span></span><br><span class="line">  <span class="attr">createIssueManually:</span> <span class="literal">true</span> <span class="comment"># 如果 issue 仓库没有当前页面的 issue 且登陆的用户为管理员，则显示一个初始化按钮创建issue 需要点击 init 按钮。</span></span><br><span class="line">  <span class="attr">distractionFreeMode:</span> <span class="literal">false</span> <span class="comment"># 是否启用快捷键(cmd|ctrl + enter) 提交评论.</span></span><br></pre></td></tr></table></figure>
+
+<h3 id="效果预览"><a href="#效果预览" class="headerlink" title="效果预览"></a>效果预览</h3><p><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/6.png"></p>
+<p><b>最后使用 hexo deploy 部署到github</b><br><b>至此踩坑结束， 感觉真的很糟糕</b></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客搭建填坑</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>Android计算分区大小</title>
     <url>/2022/02/24/Android%E8%AE%A1%E7%AE%97%E5%88%86%E5%8C%BA%E5%A4%A7%E5%B0%8F/</url>
     <content><![CDATA[<h2 id="原文跳转"><a href="#原文跳转" class="headerlink" title="原文跳转"></a><a href="https://www.neko.ink/2021/02/17/android-partition/">原文跳转</a></h2><p>在为 Android 设备撰写 Device Tree 时不免会遇到分区大小的计算，这里我找到了一些简单的方法，记录下来避免以后踩坑。</p>
@@ -34,19 +72,6 @@
       </categories>
       <tags>
         <tag>分区</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>HelloBlog</title>
-    <url>/2022/02/23/helloblog/</url>
-    <content><![CDATA[<h3 id="博客主题地址"><a href="#博客主题地址" class="headerlink" title="博客主题地址:"></a>博客主题地址:</h3><p><a href="https://github.com/fluid-dev/hexo-theme-fluid">Fluid</a><br><a href="https://github.com/Fechin/hexo-theme-diaspora/">diaspora</a></p>
-<h3 id="文档"><a href="#文档" class="headerlink" title="文档:"></a>文档:</h3><p><a href="https://hexo.fluid-dev.com/docs/">Fluid Docs</a></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
       </tags>
   </entry>
   <entry>
@@ -87,6 +112,31 @@
       </tags>
   </entry>
   <entry>
+    <title>HelloBlog</title>
+    <url>/2022/02/23/helloblog/</url>
+    <content><![CDATA[<h3 id="博客主题地址"><a href="#博客主题地址" class="headerlink" title="博客主题地址:"></a>博客主题地址:</h3><p><a href="https://github.com/fluid-dev/hexo-theme-fluid">Fluid</a><br><a href="https://github.com/Fechin/hexo-theme-diaspora/">diaspora</a></p>
+<h3 id="文档"><a href="#文档" class="headerlink" title="文档:"></a>文档:</h3><p><a href="https://hexo.fluid-dev.com/docs/">Fluid Docs</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>随机图片api接口网站</title>
+    <url>/2023/12/21/%E9%9A%8F%E6%9C%BA%E5%9B%BE%E7%89%87api%E6%8E%A5%E5%8F%A3%E7%BD%91%E7%AB%99/</url>
+    <content><![CDATA[<h2 id="自用随机图api"><a href="#自用随机图api" class="headerlink" title="自用随机图api"></a>自用随机图api</h2><p><a href="https://imgapi.cn/wiki.html">imgapi</a></p>
+]]></content>
+      <categories>
+        <category>博客</category>
+      </categories>
+      <tags>
+        <tag>博客</tag>
+      </tags>
+  </entry>
+  <entry>
     <title>给hexo博客添加live2d小人</title>
     <url>/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/</url>
     <content><![CDATA[<h3 id="给hexo博客添加Live2d小人"><a href="#给hexo博客添加Live2d小人" class="headerlink" title="给hexo博客添加Live2d小人"></a>给hexo博客添加Live2d小人</h3><p>我们在观看别人的博客的时候有时就会发现他们的博客里面有个很可爱的小人，那么如何在自己的hexo博客中添加小人呢?<br>有两种方法：</p>
@@ -115,56 +165,6 @@
 <p>更多请参考官方文档 <a href="https://github.com/stevenjoezhang/live2d-widget/blob/master/README.md">https://github.com/stevenjoezhang/live2d-widget/blob/master/README.md</a><br>或者 <a href="https://www.bilibili.com/read/cv18133283/">https://www.bilibili.com/read/cv18133283/</a></p>
 <h3 id="效果演示"><a href="#效果演示" class="headerlink" title="效果演示"></a>效果演示</h3><p><code>hexo-helper-live2d</code><br><img src="/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/1.png"></p>
 <p><code>live2d-widget</code><br><img src="/2023/01/11/%E7%BB%99hexo%E5%8D%9A%E5%AE%A2%E6%B7%BB%E5%8A%A0live2d%E5%B0%8F%E4%BA%BA/2.png"></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>hexo diaspora 主题 gitalk 插件踩坑记录</title>
-    <url>/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/</url>
-    <content><![CDATA[<h3 id="开始配置"><a href="#开始配置" class="headerlink" title="开始配置"></a>开始配置</h3><p>配置好github账号<br><code>npm i --save gitalk</code> # 安装插件<br>github 创建一个用于存放评论的空仓库备用，需要启用issue功能<br>然后需要创建 <code>GitHub Application</code> 如果没有 <a href="https://github.com/settings/applications/new">点击这里申请</a>,<br><code>Authorization callback URL</code> 填写GithubPages的域名 <code>https://xxx.github.io</code> 有专属域名的填专属域名，否则会跳转到主界面无法登陆<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/1.png"></p>
-<p>记录好Client ID  Client secrets 等会要用<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/2.png"></p>
-<p>配置themes&#x2F;_config.yml (巨坑 因为资料比较乱挨个测试，将近卡了一天)</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="string">插件默认配置:</span></span><br><span class="line"></span><br><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">    <span class="comment"># 是否启用评论功能</span></span><br><span class="line">    <span class="attr">enable:</span> <span class="literal">true</span></span><br><span class="line">    <span class="comment"># 是否自动展开评论框</span></span><br><span class="line">    <span class="attr">autoExpand:</span> <span class="literal">false</span></span><br><span class="line">    <span class="comment"># 应用编号</span></span><br><span class="line">    <span class="attr">clientID:</span> <span class="string">&#x27;7e2a5d7410f4fd6a167c&#x27;</span></span><br><span class="line">    <span class="comment"># 应用秘钥</span></span><br><span class="line">    <span class="attr">clientSecret:</span> <span class="string">&#x27;9de6847c58b787e15f1148ec4e844b3690bb8e31&#x27;</span></span><br><span class="line">    <span class="comment"># issue仓库名</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">&#x27; blog-comments&#x27;</span></span><br><span class="line">    <span class="comment"># Github名</span></span><br><span class="line">    <span class="attr">owner:</span> <span class="string">&#x27;xiaoxindada&#x27;</span></span><br><span class="line">    <span class="comment"># Github名</span></span><br><span class="line">    <span class="attr">admin:</span> [<span class="string">&#x27;xiaoxindada&#x27;</span>]</span><br><span class="line">    <span class="comment"># Ensure uniqueness and length less than 50</span></span><br><span class="line">    <span class="attr">id:</span> <span class="string">location.pathname</span></span><br><span class="line">    <span class="comment"># Facebook-like distraction free mode</span></span><br><span class="line">    <span class="attr">distractionFreeMode:</span> <span class="literal">true</span></span><br><span class="line"></span><br></pre></td></tr></table></figure>
-
-<h3 id="遇到问题"><a href="#遇到问题" class="headerlink" title="遇到问题"></a>遇到问题</h3><p> <code>Error: Not Found.</code></p>
-<p><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/3.png"><br>通过查资料得知是_config.yml配置问题<br>但是检查了无数遍发现并没有配置填错<br>然后直到遇到<a href="https://blog.csdn.net/qing_gee/article/details/100133060">这篇文章</a>的配置</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">    <span class="attr">owner:</span> <span class="string">qinggee</span></span><br><span class="line">    <span class="attr">repo:</span> <span class="string">blog-comments</span></span><br><span class="line">    <span class="attr">clientID:</span> <span class="string">11a6f252f6224761</span></span><br><span class="line">    <span class="attr">clientSecret:</span> <span class="string">3d1722301d3ecfc3828d137c9ea50c00a7</span></span><br><span class="line">    <span class="comment"># 参数需要改成你自己的</span></span><br></pre></td></tr></table></figure>
-
-<p>替换默认的配置后奇迹般的能用了<br>然后遇到了 <code>未找到相关的Issues进行评论</code></p>
-<p>通过查资料得知是issues仓库没有初始化需要如下所示:<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/4.png"><br>先初始化一下就好了，但是手动初始化实属浪费时间且容易出错<br>于是遇到了相关配置 <a href="https://iochen.com/post/use-gitalk-in-hexo/">参考文章</a></p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">perPage:</span> <span class="number">15</span> <span class="comment">#每页多少个评论</span></span><br><span class="line"><span class="attr">pagerDirection:</span> <span class="string">last</span> <span class="comment">#排序方式是从旧到新（first）还是从新到旧（last）</span></span><br><span class="line"><span class="attr">createIssueManually:</span> <span class="literal">true</span> <span class="comment">#如果当前页面没有相应的 isssue ，且登录的用户属于 admin，则会自动创建 issue。如果设置为 true，则显示一个初始化页面，创建 issue 需要点击 init 按钮。</span></span><br><span class="line"><span class="attr">distractionFreeMode:</span> <span class="literal">false</span> <span class="comment">#是否启用快捷键(cmd|ctrl + enter) 提交评论.</span></span><br></pre></td></tr></table></figure>
-
-<p>添加上理论是没有问题的但是还是没用<br>然后通过仔细查看文章还有一个管理员用户登陆配置项</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">adminUser:</span> <span class="string">&quot;[&#x27;iosite&#x27;]&quot;</span> <span class="comment">#管理员用户，下文也会详细讲</span></span><br></pre></td></tr></table></figure>
-
-<p>这个有点映像然后在<a href="https://github.com/gitalk/gitalk">官方文档</a>中发现了此配置的修改</p>
-<p>官方解释:</p>
-<p>admin <code>Array</code></p>
-<p>必须. GitHub repository 的所有者和合作者 (对这个 repository 有写权限的用户)。</p>
-<figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">admin:</span> [<span class="string">&#x27;xiaoxindada&#x27;</span>]  <span class="comment"># 管理员用户登陆</span></span><br><span class="line"><span class="attr">createIssueManually:</span> <span class="literal">true</span> <span class="comment"># 如果 issue 仓库没有当前页面的 issue 且登陆的用户为管理员，则显示一个初始化按钮创建</span></span><br></pre></td></tr></table></figure>
-
-<p>加上以后完美解决<br><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/5.png"></p>
-<h3 id="完整的配置"><a href="#完整的配置" class="headerlink" title="完整的配置"></a>完整的配置</h3><figure class="highlight yml"><table><tr><td class="code"><pre><span class="line"><span class="attr">gitalk:</span></span><br><span class="line">  <span class="attr">enable:</span> <span class="literal">true</span> <span class="comment"># 是否启用评论功能</span></span><br><span class="line">  <span class="attr">autoExpand:</span> <span class="literal">false</span> <span class="comment"># 是否自动展开评论框</span></span><br><span class="line">  <span class="attr">owner:</span> <span class="string">xiaoxindada</span> <span class="comment"># 仓库所有者</span></span><br><span class="line">  <span class="attr">repo:</span> <span class="string">blog-comments</span> <span class="comment"># issue仓库名</span></span><br><span class="line">  <span class="attr">clientID:</span> <span class="string">7e2a5d7410f4fd6a167c</span> <span class="comment"># 应用编号</span></span><br><span class="line">  <span class="attr">clientSecret:</span> <span class="string">9de6847c58b787e15f1148ec4e844b3690bb8e31</span> <span class="comment"># 应用秘钥</span></span><br><span class="line">  <span class="attr">perPage:</span> <span class="number">15</span> <span class="comment"># 每页多少个评论</span></span><br><span class="line">  <span class="attr">pagerDirection:</span> <span class="string">last</span> <span class="comment"># 排序方式是从旧到新（first）还是从新到旧（last）</span></span><br><span class="line">  <span class="attr">admin:</span> [<span class="string">&#x27;xiaoxindada&#x27;</span>]  <span class="comment"># 管理员用户登陆</span></span><br><span class="line">  <span class="attr">createIssueManually:</span> <span class="literal">true</span> <span class="comment"># 如果 issue 仓库没有当前页面的 issue 且登陆的用户为管理员，则显示一个初始化按钮创建issue 需要点击 init 按钮。</span></span><br><span class="line">  <span class="attr">distractionFreeMode:</span> <span class="literal">false</span> <span class="comment"># 是否启用快捷键(cmd|ctrl + enter) 提交评论.</span></span><br></pre></td></tr></table></figure>
-
-<h3 id="效果预览"><a href="#效果预览" class="headerlink" title="效果预览"></a>效果预览</h3><p><img src="/2022/02/25/hexo_diaspora%E4%B8%BB%E9%A2%98gitalk%E6%8F%92%E4%BB%B6%E8%B8%A9%E5%9D%91%E8%AE%B0%E5%BD%95/6.png"></p>
-<p><b>最后使用 hexo deploy 部署到github</b><br><b>至此踩坑结束， 感觉真的很糟糕</b></p>
-]]></content>
-      <categories>
-        <category>博客</category>
-      </categories>
-      <tags>
-        <tag>博客搭建填坑</tag>
-      </tags>
-  </entry>
-  <entry>
-    <title>随机图片api接口网站</title>
-    <url>/2023/12/21/%E9%9A%8F%E6%9C%BA%E5%9B%BE%E7%89%87api%E6%8E%A5%E5%8F%A3%E7%BD%91%E7%AB%99/</url>
-    <content><![CDATA[<h2 id="自用随机图api"><a href="#自用随机图api" class="headerlink" title="自用随机图api"></a>自用随机图api</h2><p><a href="https://imgapi.cn/wiki.html">imgapi</a></p>
 ]]></content>
       <categories>
         <category>博客</category>
